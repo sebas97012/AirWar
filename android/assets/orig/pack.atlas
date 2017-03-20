@@ -1,0 +1,20 @@
+
+pack.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bgbattleship
+  rotate: false
+  xy: 2, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+bgspeedship
+  rotate: false
+  xy: 124, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
