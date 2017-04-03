@@ -1,0 +1,152 @@
+package com.itcr.ce.airwar.enemies;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.itcr.ce.airwar.PowerUp;
+import com.itcr.ce.data.LinkedList;
+import com.itcr.ce.data.Random;
+
+/**
+ * Created by Arturo on 25/3/2017.
+ */
+public abstract class Enemy {
+    //Atributos que tienen que ver con la parte grafica
+    protected Texture texture;
+    protected Sprite sprite;
+    protected Vector2 out = new Vector2();
+    protected Vector2[] dataSet = new Vector2[4];
+    protected CatmullRomSpline<Vector2> catmullRomSpline;
+    protected float current = 0;
+    protected float x;
+    protected float y;
+    protected boolean dispose = false;
+
+    //Atributos que tienen que ver con la parte logica
+    protected int score;
+    protected int life;
+    protected int damage;
+    protected PowerUp powerUp;
+    protected float speed;
+
+    /**
+     * Constructor
+     * @param texturePath Imagen correspondiente al tipo de enemigo
+     * @param scale Escala segun la pantalla
+     * @param xPosition Posicion en x
+     * @param yPosition Posicion en y
+     */
+    public Enemy(String texturePath, float scale, int xPosition, int yPosition){
+        this.texture = new Texture(Gdx.files.internal(texturePath));
+        this.sprite = new Sprite(this.texture);
+        this.sprite.setSize(scale * this.texture.getWidth(), scale * this.texture.getHeight());
+        this.sprite.setOrigin(this.sprite.getWidth()/2, this.sprite.getHeight()/2);
+        this.sprite.setPosition(xPosition, yPosition);
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getLife() {
+        return life;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public PowerUp getPowerUp() {
+        return powerUp;
+    }
+
+    public void setPowerUp(PowerUp powerUp) {
+        this.powerUp = powerUp;
+    }
+
+    public void setDispose(){
+        this.dispose = true;
+    }
+
+
+    /**
+     * Metodo que se encarga de crear una ruta inicial para el enemigo
+     * @param appHeight altura
+     * @param appWidth anchura
+     */
+    public void initialPath(int appWidth, int appHeight) {
+        float xStart = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth());
+        float xEnd = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth());
+
+        //ControlPoint1
+        float controlPoint1X = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth());
+        float controlPoint1Y = Random.getRandomNumber(0 + sprite.getWidth(), appHeight - sprite.getHeight());
+
+        //ControlPoint2
+        float controlPoint2X = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth());
+        float controlPoint2Y = Random.getRandomNumber(0, controlPoint1Y);
+
+        Vector2 start = new Vector2(xStart, appHeight);
+        Vector2 end = new Vector2(xEnd, -sprite.getHeight());
+        Vector2 controlPoint1 = new Vector2(controlPoint1X, controlPoint1Y);
+        Vector2 controlPoint2 = new Vector2(controlPoint2X, controlPoint2Y);
+
+        dataSet[0] = start;
+        dataSet[1] = controlPoint2;
+        dataSet[2] = controlPoint1;
+        dataSet[3] = end;
+
+        //Ruta del enemigo
+        catmullRomSpline = new CatmullRomSpline<Vector2>(dataSet, true);
+    }
+
+    /**
+     * Metodo que se encarga de renderizar el enemigo
+     * @param batch batch
+     */
+    public void render(SpriteBatch batch)
+    {
+        current += Gdx.graphics.getDeltaTime() * speed;
+        if(current >= 1)
+            current -= 1;
+        catmullRomSpline.valueAt(out, current);
+        sprite.setRotation((float)calcRotationAngle(x, y, out.x, out.y)-180);
+        x = out.x;
+        y = out.y;
+        sprite.setPosition(x, y);
+        sprite.draw(batch);
+    }
+
+    /**
+     * Metodo que calcula en angulo de rotacion
+     * @return El angulo de rotacion
+     */
+    public static double calcRotationAngle(float cX, float cY, float tX, float tY){
+        double theta = Math.atan2(tY - cY, tX - cX); //Calcula el angulo theta (en radianes)
+        // de los valores de delta y y delta x
+        theta += Math.PI/2.0; //Gira el angulo theta 90 grados en direccion horaria
+
+        double angle = Math.toDegrees(theta); //Convierte a grados
+        if(angle < 0){ //Si es angulo es negativo lo pasamos a positivo
+            angle += 360;
+        }
+
+        return angle;
+    }
+
+    public boolean checkOverlap(Rectangle rectangle){
+        return !(x > rectangle.x + rectangle.width || x + sprite.getWidth() < rectangle.x || y > rectangle.y + rectangle.height || y + sprite.getHeight() < rectangle.y);
+    }
+
+    public void dispose(){
+        texture.dispose();
+    }
+}
