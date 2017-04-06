@@ -3,7 +3,7 @@ package com.itcr.ce.airwar;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.itcr.ce.screens.MenuScreen;
+import com.itcr.ce.airwar.screens.MenuScreen;
 
 
 /**
@@ -42,5 +42,6 @@ public class MyGdxGame extends Game {
         batch.dispose();
         font.dispose();
     }
+
 
 }

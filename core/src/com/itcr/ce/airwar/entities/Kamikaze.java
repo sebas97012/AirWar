@@ -28,3 +28,4 @@ public class Kamikaze extends Enemy {
     }
     */
 }
+

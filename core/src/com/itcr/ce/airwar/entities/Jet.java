@@ -18,4 +18,5 @@ public class Jet extends Enemy {
         this.damage = 1; //Mata al jugador de tres disparos
         this.speed = 0.15f; //Alta velocidad
     }
+
 }

@@ -4,8 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.itcr.ce.airwar.*;
-import com.itcr.ce.airwar.levels.*;
-import com.itcr.ce.airwar.entities.*;
+import com.itcr.ce.airwar.entities.PlayerPlane;
+import com.itcr.ce.airwar.levels.Level;
+import com.itcr.ce.airwar.entities.Enemy;
 
 /**
  * Created by Arturo on 5/4/2017.

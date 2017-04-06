@@ -12,7 +12,4 @@ public class Random {
     public static int getRandomNumber(int from, int to){
         return from + (int)(Math.random() * ((to - from) + 1));
     }
-
-
-
 }

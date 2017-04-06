@@ -70,4 +70,5 @@ public class PlayerPlane {
     public Vector2 getPlaneLocation() {
         return planeLocation;
     }
+
 }

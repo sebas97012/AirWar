@@ -7,7 +7,6 @@ import com.itcr.ce.airwar.entities.PlayerPlane;
 import com.itcr.ce.data.*;
 import com.itcr.ce.airwar.*;
 import com.itcr.ce.airwar.Random;
-import com.itcr.ce.screens.GameScreen;
 
 /**
  * Created by Arturo on 4/4/2017.
@@ -107,4 +106,5 @@ public class Level {
             enemyCollection.insertAtEnd(enemy);
         }
     }
+
 }

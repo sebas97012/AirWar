@@ -2,7 +2,7 @@ package com.itcr.ce.airwar;
 
 import com.itcr.ce.airwar.entities.PlayerPlane;
 import com.itcr.ce.airwar.levels.*;
-import com.itcr.ce.screens.GameScreen;
+import com.itcr.ce.airwar.screens.GameScreen;
 
 /**
  * Created by Arturo on 4/4/2017.
@@ -69,3 +69,4 @@ public class Player {
         return this.inputProcessor;
     }
 }
+

@@ -165,4 +165,3 @@ public abstract class Enemy {
         texture.dispose();
     }
 }
-

@@ -17,4 +17,5 @@ public class Boss extends Enemy {
         this.damage = 3; //Mata al jugador de un disparo
         this.speed = 0.15f; ; //Velocidad baja
     }
+
 }
