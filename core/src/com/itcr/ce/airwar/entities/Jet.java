@@ -1,9 +1,16 @@
-package com.itcr.ce.airwar.enemies;
+package com.itcr.ce.airwar.entities;
 
 /**
  * Created by Arturo on 25/3/2017.
  */
 public class Jet extends Enemy {
+    /**
+     * Constructor
+     * @param texturePath Textura deseada para el enemigo
+     * @param scale Escala deseada para la textura
+     * @param xPosition Posicion en el eje x para spawnearlo
+     * @param yPosition Posicion en el eje y para spawnearlo
+     */
     public Jet(String texturePath, float scale, int xPosition, int yPosition){
         super(texturePath, scale, xPosition, yPosition);
         this.score = 5;

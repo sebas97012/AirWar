@@ -119,6 +119,26 @@ public class LinkedList<T> {
     }
 
     /**
+     * Metodo que elimina un elemento en una posicion especifica
+     * @param position Posicion del elemento a eliminar
+     */
+    public void deleteElement(int position) {
+        if (position == 0) {
+            this.deleteFirst();
+        } else {
+            if (position <= (this.size - 1)) {
+                Node current = this.first;
+                for (int i = 0; i < (position - 1); i++) {
+                    current = current.getNext();
+                }
+
+                current.setNext(current.getNext().getNext());
+                this.size--;
+            }
+        }
+    }
+
+    /**
      * Método para imprimir la lista
      */
     public void printList() {

@@ -1,4 +1,4 @@
-package com.itcr.ce.airwar.enemies;
+package com.itcr.ce.airwar.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,9 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.itcr.ce.airwar.PowerUp;
-import com.itcr.ce.data.LinkedList;
-import com.itcr.ce.data.Random;
+import com.itcr.ce.airwar.Random;
 
 /**
  * Created by Arturo on 25/3/2017.
@@ -30,7 +28,7 @@ public abstract class Enemy {
     protected int score;
     protected int life;
     protected int damage;
-    protected PowerUp powerUp;
+    //protected PowerUp powerUp;
     protected float speed;
 
     /**
@@ -63,7 +61,7 @@ public abstract class Enemy {
     public float getSpeed() {
         return speed;
     }
-
+/*
     public PowerUp getPowerUp() {
         return powerUp;
     }
@@ -71,29 +69,41 @@ public abstract class Enemy {
     public void setPowerUp(PowerUp powerUp) {
         this.powerUp = powerUp;
     }
-
+*/
     public void setDispose(){
         this.dispose = true;
     }
 
+    public Sprite getSprite() {
+        return this.sprite;
+    }
+
+    public Vector2 getOut(){
+        return this.out;
+    }
+
+    public CatmullRomSpline getCatmullRomSpline(){
+        return this.catmullRomSpline;
+    }
 
     /**
-     * Metodo que se encarga de crear una ruta inicial para el enemigo
-     * @param appHeight altura
-     * @param appWidth anchura
+     * Metodo que se encarga de crear una ruta para el enemigo
+     * @param appHeight altura de la app
+     * @param appWidth anchura de la app
      */
     public void initialPath(int appWidth, int appHeight) {
-        float xStart = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth());
-        float xEnd = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth());
+        float xStart = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth()); //Punto inicial
+        float xEnd = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth()); //Punto final
 
-        //ControlPoint1
+        //Componentes del ControlPoint1
         float controlPoint1X = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth());
         float controlPoint1Y = Random.getRandomNumber(0 + sprite.getWidth(), appHeight - sprite.getHeight());
 
-        //ControlPoint2
+        //Componentes del ControlPoint2
         float controlPoint2X = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth());
         float controlPoint2Y = Random.getRandomNumber(0, controlPoint1Y);
 
+        //Se crean los vectores
         Vector2 start = new Vector2(xStart, appHeight);
         Vector2 end = new Vector2(xEnd, -sprite.getHeight());
         Vector2 controlPoint1 = new Vector2(controlPoint1X, controlPoint1Y);
@@ -117,12 +127,12 @@ public abstract class Enemy {
         current += Gdx.graphics.getDeltaTime() * speed;
         if(current >= 1)
             current -= 1;
-        catmullRomSpline.valueAt(out, current);
-        sprite.setRotation((float)calcRotationAngle(x, y, out.x, out.y)-180);
+        catmullRomSpline.valueAt(out, current); //Se calculan las componentes x y y del vector segun el deltaTime
+        sprite.setRotation((float)calcRotationAngle(x, y, out.x, out.y)-180); //Se obtiene el angulo de rotacion correspondiente
         x = out.x;
         y = out.y;
-        sprite.setPosition(x, y);
-        sprite.draw(batch);
+        sprite.setPosition(x, y); //Se coloca en la posicion
+        sprite.draw(batch); //Se dibuja
     }
 
     /**
@@ -142,6 +152,11 @@ public abstract class Enemy {
         return angle;
     }
 
+    /**
+     * Metodo que verifica si el enemigo a chocado contra algun objeto
+     * @param rectangle
+     * @return
+     */
     public boolean checkOverlap(Rectangle rectangle){
         return !(x > rectangle.x + rectangle.width || x + sprite.getWidth() < rectangle.x || y > rectangle.y + rectangle.height || y + sprite.getHeight() < rectangle.y);
     }
@@ -150,3 +165,4 @@ public abstract class Enemy {
         texture.dispose();
     }
 }
+
