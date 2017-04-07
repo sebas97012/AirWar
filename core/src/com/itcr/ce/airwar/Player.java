@@ -11,16 +11,15 @@ public class Player {
     private int lifes;
     private String munitionType;
     private int munition = 0;
-    private PlayerShip plane;
+    private PlayerShip ship;
     private Level level;
     private MyInputProcessor inputProcessor;
-    private GameScreen gameScreen;
 
     /**
      * Constructor
      */
     public Player(){
-        this.plane = new PlayerShip();
+        this.ship = new PlayerShip();
         this.level = new Level(this);
         this.inputProcessor = new MyInputProcessor(this);
         this.lifes = 5;
@@ -28,14 +27,6 @@ public class Player {
 
     public void setLevel(Level level){
         this.level = level;
-    }
-
-    public GameScreen getGameScreen() {
-        return gameScreen;
-    }
-
-    public void setGameScreen(GameScreen gameScreen) {
-        this.gameScreen = gameScreen;
     }
 
     public Level getLevel(){
@@ -66,8 +57,8 @@ public class Player {
         this.lifes = lifes;
     }
 
-    public PlayerShip getPlane(){
-        return this.plane;
+    public PlayerShip getShip(){
+        return this.ship;
     }
 
     public MyInputProcessor getInputProcessor(){

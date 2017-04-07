@@ -3,7 +3,7 @@ package com.itcr.ce.data;
 /**
  * Created by Arturo on 20/3/2017.
  */
-public class Stack<T> {
+public class Stack<T> extends LinkedList{
     private Node top;
     private int size;
 

@@ -1,6 +1,7 @@
 package com.itcr.ce.airwar;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,9 +15,10 @@ import com.badlogic.gdx.math.Vector2;
 public class BulletPlayer {
     private Texture texture;
     private Sprite sprite;
+    private Sound sound;
     private Vector2 out = new Vector2();
     private Vector2[] dataSet = new Vector2[2];
-    private CatmullRomSpline<Vector2> catmullRomSpline;
+    private CatmullRomSpline<Vector2> path;
     private float current = 0;
     private float x;
     private float y;
@@ -31,11 +33,12 @@ public class BulletPlayer {
      * @param xPosition Posicion inicial en x
      * @param yPosition Posicion inicial en y
      */
-    public BulletPlayer(String texturePath, float scale, int xPosition, int yPosition, float speed, int damage){
+    public BulletPlayer(String texturePath, String soundPath, float scale, int xPosition, int yPosition, float speed, int damage){
         this.texture = new Texture(Gdx.files.internal(texturePath)); //Se carga la textura
         this.sprite = new Sprite(this.texture); //Se crea el sprite
         this.sprite.setSize(scale * this.texture.getWidth(), scale * this.texture.getHeight()); //Se le coloca la escala
         this.sprite.setPosition(xPosition, yPosition); //Se coloca el sprite en la posicion inicial correspondiente
+        this.sound = Gdx.audio.newSound(Gdx.files.internal(soundPath));
         this.speed = speed;
         this.damage = damage;
     }
@@ -46,6 +49,10 @@ public class BulletPlayer {
 
     public Sprite getSprite(){
         return this.sprite;
+    }
+
+    public Sound getSound(){
+        return this.sound;
     }
 
     /**
@@ -61,7 +68,7 @@ public class BulletPlayer {
         dataSet[0] = start;
         dataSet[1] = end;
 
-        catmullRomSpline = new CatmullRomSpline<Vector2>(dataSet, true); //Trayecto que va a seguir la bala
+        path = new CatmullRomSpline<Vector2>(dataSet, true); //Trayecto que va a seguir la bala
     }
 
     /**
@@ -73,7 +80,7 @@ public class BulletPlayer {
         if(current >= 1)
             current -= 1;
 
-        catmullRomSpline.valueAt(out, current); //Se calcula el vector segun el deltaTime
+        path.valueAt(out, current); //Se calcula el vector segun el deltaTime
         x = out.x; //Componente x del vector
         y = out.y; //Componente y del vector
 

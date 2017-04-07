@@ -31,7 +31,7 @@ public class GameScreen implements Screen {
     public GameScreen(MyGdxGame game, Player player) {
         this.game = game;
         this.player = player;
-        this.playerShip = player.getPlane();
+        this.playerShip = player.getShip();
         this.level = player.getLevel();
         this.inputProcessor = player.getInputProcessor();
         this.camera = new OrthographicCamera(MyGdxGame.appWidth, MyGdxGame.appHeight); //Se crea una nueva camara
@@ -78,6 +78,7 @@ public class GameScreen implements Screen {
                     this.updatePlayerShip();
                     this.updateBulletEnemies();
                     this.updateBulletColisions();
+                    this.updateExplosions();
                     level.enemiesShoot();
                 }
             }
@@ -135,6 +136,9 @@ public class GameScreen implements Screen {
             BulletEnemy bullet = (BulletEnemy) level.getBulletEnemyCollection().getElement(x).getDataT();
 
             if(bullet.checkOverlap(playerShip.getSubjectSprite().getBoundingRectangle())){
+                float width = playerShip.getSubjectSprite().getWidth();
+                float height = playerShip.getSubjectSprite().getHeight();
+                level.createExplosion(playerShip.getPlaneLocation().x, playerShip.getPlaneLocation().y, width, height);
                 player.setLifes(player.getLifes() - 1);
                 bullet.dispose();
                 level.getBulletEnemyCollection().deleteElement(x);
@@ -154,14 +158,19 @@ public class GameScreen implements Screen {
             Enemy enemy = (Enemy) level.getEnemyCollection().getElement(x).getDataT();
             enemy.render(game.batch);
             if (enemy.checkOverlap(playerShip.getSubjectSprite().getBoundingRectangle())) {
-                // sound
-                //pigeon.play();
+                //Explosion del enemigo
+                float widthE = enemy.getSprite().getWidth();
+                float heightE = enemy.getSprite().getHeight();
+                level.createExplosion(enemy.getSprite().getX(), enemy.getSprite().getY(), widthE, heightE);
+
+                //Explosion del jugador
+                float widthP = playerShip.getSubjectSprite().getWidth();
+                float heightP = playerShip.getSubjectSprite().getHeight();
+                level.createExplosion(playerShip.getPlaneLocation().x, playerShip.getPlaneLocation().y, widthP, heightP);
+
                 player.setLifes(player.getLifes() - 1);
                 enemy.setDispose();
                 level.getEnemyCollection().deleteElement(x); //Se elimina el enemigo
-                //Explosion exp = new Explosion("explosion19.png", (tmp.x + tmp.sprite.getWidth()/2), tmp.y + tmp.sprite.getHeight()/2);
-                //expCollection.add(exp);
-                //expCollectionSize++;
             }
             if(enemy.getSprite().getY() < -100){
                 enemy.dispose();
@@ -202,6 +211,11 @@ public class GameScreen implements Screen {
                     eliminate = true; //Hay que eliminar la bala y el enemigo
                     posEnemy = x; //Se guarda la posicion del enemigo en especifico
                     posBullet = i; //Se guarda la posicion de la bala especifica
+
+                    //Explosion del enemigo
+                    float widthE = enemy.getSprite().getWidth();
+                    float heightE = enemy.getSprite().getHeight();
+                    level.createExplosion(enemy.getSprite().getX(), enemy.getSprite().getY(), widthE, heightE);
                 }
             }
             //Se elimina el enemigo si hubo impacto
@@ -209,6 +223,25 @@ public class GameScreen implements Screen {
                 this.score += enemy.getScore();
                 level.getEnemyCollection().deleteElement(posEnemy); //Se elimina el enemigo
                 level.getBulletPlayerCollection().deleteElement(posBullet); //Se elimina la bala
+            }
+        }
+    }
+
+    /**
+     * Metodo que se encarga de actualizar las explosiones
+     */
+    private void updateExplosions(){
+        for(int x = 0; x < level.getExplosionCollection().getSize(); x++){
+            Explosion explosion = (Explosion) level.getExplosionCollection().getElement(x).getDataT();
+            explosion.render(game.batch); //Se dibuja en el SpriteBatch
+        }
+
+        //Se verifica si la animacion ya ha terminado
+        for (int i = 0; i < level.getExplosionCollection().getSize(); i++) {
+            Explosion explosion = (Explosion) level.getExplosionCollection().getElement(i).getDataT();
+            if(explosion.getElapsedTime() > 1.6/2f){
+                explosion.dispose();
+                level.getExplosionCollection().deleteElement(i); //Si ya termino, se elimina de la lista
             }
         }
     }

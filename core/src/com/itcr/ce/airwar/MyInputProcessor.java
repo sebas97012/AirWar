@@ -3,9 +3,7 @@ package com.itcr.ce.airwar;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.itcr.ce.airwar.entities.Enemy;
 import com.itcr.ce.airwar.entities.PlayerShip;
-import com.itcr.ce.airwar.levels.*;
 
 /**
  * Created by Arturo on 4/4/2017.
@@ -22,7 +20,7 @@ public class MyInputProcessor implements InputProcessor{
      */
     public MyInputProcessor(Player player){
         this.player = player;
-        this.playerShip = player.getPlane();
+        this.playerShip = player.getShip();
     }
 
     /**

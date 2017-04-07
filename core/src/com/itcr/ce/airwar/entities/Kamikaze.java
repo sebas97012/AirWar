@@ -1,11 +1,8 @@
 package com.itcr.ce.airwar.entities;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector2;
 import com.itcr.ce.airwar.MyGdxGame;
-import com.itcr.ce.data.LinkedList;
 import com.itcr.ce.data.Random;
 
 
@@ -46,6 +43,6 @@ public class Kamikaze extends Enemy {
         dataSet[1] = playerPosition;
         dataSet[2] = end;
 
-        this.catmullRomSpline = new CatmullRomSpline<Vector2>(dataSet, true);
+        this.path = new CatmullRomSpline<Vector2>(dataSet, true);
     }
 }

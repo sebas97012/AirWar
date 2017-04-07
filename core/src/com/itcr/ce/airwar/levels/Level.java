@@ -16,10 +16,11 @@ public class Level {
     private Level nextLevel;
     private Player player;
     private PlayerShip playerShip;
-    private String texture = "ground/space-2.png";//"airplane/woods.png";
+    private String texture = "ground/space-2.png";
     private LinkedList<BulletPlayer> bulletPlayerCollection = new LinkedList<BulletPlayer>();
     private LinkedList<Enemy> enemyCollection = new LinkedList<Enemy>();
     private LinkedList<BulletEnemy> bulletEnemyCollection = new LinkedList<BulletEnemy>();
+    private LinkedList<Explosion> explosionCollection = new LinkedList<Explosion>();
 
     /**
      * Constructor
@@ -27,7 +28,7 @@ public class Level {
      */
     public Level(Player player) {
         this.player = player;
-        this.playerShip = player.getPlane();
+        this.playerShip = player.getShip();
     }
 
     public String getTexture(){
@@ -50,6 +51,10 @@ public class Level {
         return bulletEnemyCollection;
     }
 
+    public LinkedList<Explosion> getExplosionCollection() {
+        return explosionCollection;
+    }
+
     /**
      * Metodo que se encarga de crear una bala del jugador
      */
@@ -61,17 +66,18 @@ public class Level {
 
         if(player.getMunition() > 0){ //Si el jugador tiene municion de algun power up
             if(player.getMunitionType() == "laser"){ //Power up laser
-                bullet = new BulletPlayer("airplane/B_2.png", 1.2f, (int) x, (int) y, 0.75f, 1); //Se la bala tipo laser
+                bullet = new BulletPlayer("bullets/defaultBullet.png", "sounds/pew.wav", 1.2f, (int) x, (int) y, 0.75f, 1); //Se la bala tipo laser
             }
             if(player.getMunitionType() == "misiles"){ //Power up misil
-                bullet = new BulletPlayer("airplane/B_2.png", 1.2f, (int) x, (int) y, 0.75f, 1); //Se la bala tipo misil
+                bullet = new BulletPlayer("bullets/defaultBullet.png", "sounds/pew.wav", 1.2f, (int) x, (int) y, 0.75f, 1); //Se la bala tipo misil
             }
             player.setMunition(player.getMunition() - 1); //Se elimina la municion utilizada
         } else {
-            bullet = new BulletPlayer("airplane/B_2.png", 1.2f, (int) x, (int) y, 0.75f, 1); //Se crea la bala por defecto
+            bullet = new BulletPlayer("bullets/defaultBullet.png", "sounds/pew.wav", 1.2f, (int) x, (int) y, 0.75f, 1); //Se crea la bala por defecto
         }
         bullet.initialPath((int) x, (int) y, MyGdxGame.appHeight); //Se el asigna la trayectoria
 
+        bullet.getSound().play(0.03f);
         bulletPlayerCollection.insertAtEnd(bullet); //Se añade a la lista de balas
     }
 
@@ -92,9 +98,10 @@ public class Level {
 
         if (enemy.getClass() != Kamikaze.class) {
             if ((enemy.getLastShoot() + 0.60f) < enemy.getElapsetTime()) {
-                BulletEnemy bullet = new BulletEnemy("airplane/B_2.png", 1.2f, xStart, yStart - 20, 0.50f, 1);
+                BulletEnemy bullet = new BulletEnemy("bullets/defaultBullet.png", 1.2f, xStart, yStart - 20, 0.50f, 1);
                 bullet.initialPath(xStart, yStart);
                 bulletEnemyCollection.insertAtEnd(bullet);
+                bullet.getSound().play();
                 enemy.setLastShoot(enemy.getElapsetTime());
             }
 
@@ -102,13 +109,17 @@ public class Level {
         }
     }
 
+    public void createExplosion(float xPos, float yPos, float width, float height){
+        Explosion explosion = new Explosion(xPos, yPos, width, height);
+        explosion.getSound().play(0.10f);
+        this.explosionCollection.insertAtEnd(explosion);
+    }
+
     public void scheduleEnemies(){
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                if(player.getGameScreen().isPaused() == false) {
-                    EnemiesAndClouds();
-                }
+                EnemiesAndClouds();
             }
         }, 0, 1.0f);
     }

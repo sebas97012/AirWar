@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * Created by Arturo on 25/3/2017.
  */
 public class Ground {
-    Texture tex;
+    Texture texture;
     Sprite ground;
     Sprite ground2;
     float _width;
@@ -27,11 +27,11 @@ public class Ground {
         _width = appWidth;
         _height = appHeight;
         _yVelocity = initalYVelocity;
-        tex = new Texture(groundTexturePath);
-        ground = new Sprite(tex);
+        texture = new Texture(groundTexturePath);
+        ground = new Sprite(texture);
         ground.setSize(_width, _height);
 
-        ground2 = new Sprite(tex);
+        ground2 = new Sprite(texture);
         ground2.setSize(_width, _height);
         ground2.setPosition(0.0f, ground.getHeight()+ground.getY());
     }
@@ -61,7 +61,7 @@ public class Ground {
     }
 
     public void dispose(){
-        tex.dispose();
+        texture.dispose();
     }
 }
 

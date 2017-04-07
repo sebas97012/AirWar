@@ -19,7 +19,7 @@ public abstract class Enemy {
     protected Sprite sprite;
     protected Vector2 out = new Vector2();
     protected Vector2[] dataSet = new Vector2[4];
-    protected CatmullRomSpline<Vector2> catmullRomSpline;
+    protected CatmullRomSpline<Vector2> path;
     protected float current = 0;
     protected float x;
     protected float y;
@@ -100,8 +100,8 @@ public abstract class Enemy {
         return this.out;
     }
 
-    public CatmullRomSpline getCatmullRomSpline(){
-        return this.catmullRomSpline;
+    public CatmullRomSpline getPath(){
+        return this.path;
     }
 
     /**
@@ -132,7 +132,7 @@ public abstract class Enemy {
         dataSet[3] = end;
 
         //Ruta del enemigo
-        catmullRomSpline = new CatmullRomSpline<Vector2>(dataSet, true);
+        path = new CatmullRomSpline<Vector2>(dataSet, true);
     }
 
     /**
@@ -144,7 +144,7 @@ public abstract class Enemy {
         current += Gdx.graphics.getDeltaTime() * speed;
         if(current >= 1)
             current -= 1;
-        catmullRomSpline.valueAt(out, current); //Se calculan las componentes x y y del vector segun el deltaTime
+        path.valueAt(out, current); //Se calculan las componentes x y y del vector segun el deltaTime
         sprite.setRotation((float)calcRotationAngle(x, y, out.x, out.y)-180); //Se obtiene el angulo de rotacion correspondiente
         x = out.x;
         y = out.y;
