@@ -6,17 +6,15 @@ package com.itcr.ce.airwar.entities;
 public class Jet extends Enemy {
     /**
      * Constructor
-     * @param texturePath Textura deseada para el enemigo
      * @param scale Escala deseada para la textura
      * @param xPosition Posicion en el eje x para spawnearlo
      * @param yPosition Posicion en el eje y para spawnearlo
      */
-    public Jet(String texturePath, float scale, int xPosition, int yPosition){
-        super(texturePath, scale, xPosition, yPosition);
+    public Jet(float scale, int xPosition, int yPosition){
+        super("airplane/shipblue0020.png", scale, xPosition, yPosition);
         this.score = 5;
         this.life = 3; //Muere de tres disparos
         this.damage = 1; //Mata al jugador de tres disparos
         this.speed = 0.15f; //Alta velocidad
     }
-
 }

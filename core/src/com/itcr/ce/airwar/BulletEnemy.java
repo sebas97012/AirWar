@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.itcr.ce.data.*;
 
 /**
  * Created by Arturo on 25/3/2017.
  */
 public class BulletEnemy {
-    //Atributos que tienen que ver con la parte grafica
     private Texture texture;
     private Sprite sprite;
     private Vector2 out = new Vector2();
@@ -27,61 +27,71 @@ public class BulletEnemy {
 
     /**
      * Constructor
-     * @param texturePath Imagen correspondiente al tipo de enemigo
-     * @param scale Escala deseada para la textura
-     * @param xPosition Posicion en x
-     * @param yPosition Posicion en y
+     * @param texturePath Imagen correspondiente al tipo de bala
+     * @param scale Escala
+     * @param xPosition Posicion inicial en x
+     * @param yPosition Posicion inicial en y
      */
-    public BulletEnemy(String texturePath, float scale, int xPosition, int yPosition, float speed, int damage){
+    public BulletEnemy(String texturePath, float scale, float xPosition, float yPosition, float speed, int damage){
         this.texture = new Texture(Gdx.files.internal(texturePath)); //Se carga la textura
-        this.sprite = new Sprite(this.texture); //Se crea un sprite con la textura
-        this.sprite.setSize(scale * this.texture.getWidth(), scale * this.texture.getHeight()); //Se le aplica la escala
-        //this.sprite.setOrigin(this.sprite.getWidth()/2, this.sprite.getHeight()/2);
-        this.sprite.setPosition(xPosition, yPosition); ///Se coloca el sprite en el punto deseado
+        this.sprite = new Sprite(this.texture); //Se crea el sprite
+
+        this.sprite.rotate(180); //ELIMINAR
+
+        this.sprite.setSize(scale * this.texture.getWidth(), scale * this.texture.getHeight()); //Se le coloca la escala
+        this.sprite.setPosition(xPosition, yPosition); //Se coloca el sprite en la posicion inicial correspondiente
         this.speed = speed;
         this.damage = damage;
     }
 
-    public void setDispose(){
-        this.dispose = true;
+    public float getY(){
+        return this.y;
+    }
+
+    public Sprite getSprite(){
+        return this.sprite;
+    }
+
+    public int getDamage(){
+        return this.damage;
     }
 
     /**
-     * Metodo que crea la ruta que va a seguir la bala del enemigo
-     * @param xStart Posicion inicial en x
-     * @param yStart Posicion inicial en y
-     * @param xEnd Posicion final en x
-     * @param yEnd Posicion final en y
+     * Calcula el camino que va a seguir la bala
+     * @param xStart Posicion inicial en el eje x
+     * @param yStart Posicion inicial en el eje y
      */
-    public void initialPath(float xStart, float yStart, float xEnd, float yEnd) {
-        Vector2 start = new Vector2(xStart, yStart); //Se crea el vector con la posicion inicial
-        Vector2 end = new Vector2(xEnd, yEnd); //Se crea el vector con la posicion final
+    public void initialPath(float xStart, float yStart) {
+        Vector2 start = new Vector2(xStart, yStart); //Posicion inicial
+        Vector2 end = new Vector2(xStart, (-2 * this.sprite.getHeight())); //Posicion final
 
         dataSet[0] = start;
         dataSet[1] = end;
 
-        catmullRomSpline = new CatmullRomSpline<Vector2>(dataSet, true); //Ruta de la bala
+        catmullRomSpline = new CatmullRomSpline<Vector2>(dataSet, true); //Trayecto que va a seguir la bala
     }
 
     /**
-     * Metodo encargado de renderizar la bala en la posicion correspondiente
-     * @param batch
+     * Metodo que se encarga de renderizar la bala
+     * @param batch batch en el que dibujar
      */
     public void render(SpriteBatch batch) {
         current += Gdx.graphics.getDeltaTime() * speed;
         if(current >= 1)
             current -= 1;
-        catmullRomSpline.valueAt(out, current); //Segun el tiempo actual, se calcula la posicion en la que deberia estar el vector
-        x = out.x; //Se obtiene la componente x
-        y = out.y; //Se obtiene la componenete y
-        sprite.setPosition(x, y); //Se coloca el sprite en la posicion indicada
-        sprite.draw(batch); //Se dibuja
+
+        catmullRomSpline.valueAt(out, current); //Se calcula el vector segun el deltaTime
+        x = out.x; //Componente x del vector
+        y = out.y; //Componente y del vector
+
+        sprite.setPosition(x, y); //Se le coloca en la posicion "x" y "y" correspondiente
+        sprite.draw(batch);  //Se dibuja en el batch
     }
 
     /**
-     * Metodo que verifica si ha impactado contra el jugador
-     * @param rectangle Rectangulo del jugador
-     * @return Si ha colisionado o no
+     * Verifica si el sprite ha colisionado contra otro
+     * @param rectangle Rectangulo del otro objeto
+     * @return True si los dos objetos han chocado
      */
     public boolean checkOverlap(Rectangle rectangle){
         return !(x > rectangle.x + rectangle.width || x + sprite.getWidth() < rectangle.x || y > rectangle.y + rectangle.height || y + sprite.getHeight() < rectangle.y);
@@ -91,4 +101,3 @@ public class BulletEnemy {
         texture.dispose();
     }
 }
-

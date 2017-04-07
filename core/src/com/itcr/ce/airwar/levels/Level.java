@@ -1,9 +1,10 @@
 package com.itcr.ce.airwar.levels;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Timer;
 import com.itcr.ce.airwar.entities.*;
 import com.itcr.ce.airwar.Player;
-import com.itcr.ce.airwar.entities.PlayerPlane;
+import com.itcr.ce.airwar.entities.PlayerShip;
 import com.itcr.ce.data.*;
 import com.itcr.ce.airwar.*;
 import com.itcr.ce.airwar.Random;
@@ -14,7 +15,7 @@ import com.itcr.ce.airwar.Random;
 public class Level {
     private Level nextLevel;
     private Player player;
-    private PlayerPlane playerPlane;
+    private PlayerShip playerShip;
     private String texture = "ground/space-2.png";//"airplane/woods.png";
     private LinkedList<BulletPlayer> bulletPlayerCollection = new LinkedList<BulletPlayer>();
     private LinkedList<Enemy> enemyCollection = new LinkedList<Enemy>();
@@ -26,7 +27,7 @@ public class Level {
      */
     public Level(Player player) {
         this.player = player;
-        this.playerPlane = player.getPlane();
+        this.playerShip = player.getPlane();
     }
 
     public String getTexture(){
@@ -50,11 +51,11 @@ public class Level {
     }
 
     /**
-     * Metodo que se encarga de spawnear una bala del jugador
+     * Metodo que se encarga de crear una bala del jugador
      */
     public void createPlayerBullet() {
-        float x = playerPlane.getSubjectSprite().getX() + (playerPlane.getTexture().getWidth() / 2); //Se obtiene la posicion del jugador en el eje x
-        float y = playerPlane.getSubjectSprite().getY() + 50 + (playerPlane.getTexture().getHeight() / 4); //Se obtiene la posicion del jugador en el eje y
+        float x = playerShip.getSubjectSprite().getX() + (playerShip.getTexture().getWidth() / 2); //Se obtiene la posicion del jugador en el eje x
+        float y = playerShip.getSubjectSprite().getY() + 50 + (playerShip.getTexture().getHeight() / 4); //Se obtiene la posicion del jugador en el eje y
 
         BulletPlayer bullet = null;
 
@@ -72,6 +73,33 @@ public class Level {
         bullet.initialPath((int) x, (int) y, MyGdxGame.appHeight); //Se el asigna la trayectoria
 
         bulletPlayerCollection.insertAtEnd(bullet); //Se añade a la lista de balas
+    }
+
+    public void enemiesShoot(){
+        for(int i = 0; i < this.enemyCollection.getSize(); i++){
+            Enemy enemy = (Enemy) this.enemyCollection.getElement(i).getDataT();
+
+            this.createBulletEnemy(enemy);
+        }
+    }
+
+    /**
+     * Metodo que se encarga de crear una bala enemiga
+     */
+    private void createBulletEnemy(Enemy enemy) {
+        float xStart = enemy.getSprite().getX() + (enemy.getSprite().getWidth() / 2);
+        float yStart = enemy.getSprite().getY();
+
+        if (enemy.getClass() != Kamikaze.class) {
+            if ((enemy.getLastShoot() + 0.60f) < enemy.getElapsetTime()) {
+                BulletEnemy bullet = new BulletEnemy("airplane/B_2.png", 1.2f, xStart, yStart - 20, 0.50f, 1);
+                bullet.initialPath(xStart, yStart);
+                bulletEnemyCollection.insertAtEnd(bullet);
+                enemy.setLastShoot(enemy.getElapsetTime());
+            }
+
+            enemy.setElapsedTime(enemy.getElapsetTime() + Gdx.graphics.getDeltaTime());
+        }
     }
 
     public void scheduleEnemies(){
@@ -93,18 +121,19 @@ public class Level {
 
             int randomEnemy = Random.getRandomNumber(0, 2);
             if(randomEnemy  == 1) {
-                enemy = new Jet("airplane/shipblue0020.png", 0.45f, MyGdxGame.appWidth / 2, MyGdxGame.appHeight / 2);
+                enemy = new Jet(0.45f, MyGdxGame.appWidth / 2, MyGdxGame.appHeight / 2);
             }else {
                 if (randomEnemy == 0) {
-                    enemy = new Kamikaze("airplane/shipgreen0001.gif", 1.25f, MyGdxGame.appWidth / 2, MyGdxGame.appHeight / 2, MyGdxGame.appWidth / 2, MyGdxGame.appHeight / 2);
+                    float xPosEnd = this.playerShip.getPlaneLocation().x;
+                    float yPosEnd = this.playerShip.getPlaneLocation().y;
+                    enemy = new Kamikaze(1.3f, MyGdxGame.appWidth / 2, MyGdxGame.appHeight / 2, xPosEnd, yPosEnd);
                 }else {
-                    enemy = new FighterBomber("airplane/shipred0000.png", 0.45f, MyGdxGame.appWidth / 2, MyGdxGame.appHeight / 2);
+                    enemy = new FighterBomber(0.45f, MyGdxGame.appWidth / 2, MyGdxGame.appHeight / 2);
 
                 }
             }
-            enemy.initialPath(MyGdxGame.appWidth, MyGdxGame.appHeight);
+            enemy.initialPath();
             enemyCollection.insertAtEnd(enemy);
         }
     }
-
 }

@@ -139,6 +139,25 @@ public class LinkedList<T> {
     }
 
     /**
+     * Metodo que elimina un objeto si este esta dentro de la lista
+     * @param object Objeto a eliminar
+     */
+    public void deleteElement(T object){
+        Node current = this.first;
+
+        if(current.getDataT() == object){
+            this.deleteFirst();
+        } else{
+            for(int i = 0; i < (this.size - 1); i++){
+                if(current.getNext().getDataT() == object){
+                    current.setNext(current.getNext().getNext());
+                }
+                current = current.getNext();
+            }
+        }
+    }
+
+    /**
      * Método para imprimir la lista
      */
     public void printList() {

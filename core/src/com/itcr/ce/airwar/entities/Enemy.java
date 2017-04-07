@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Random;
 
 /**
@@ -23,6 +24,8 @@ public abstract class Enemy {
     protected float x;
     protected float y;
     protected boolean dispose = false;
+    protected float lastShoot;
+    protected float elapsedTime;
 
     //Atributos que tienen que ver con la parte logica
     protected int score;
@@ -33,17 +36,32 @@ public abstract class Enemy {
 
     /**
      * Constructor
-     * @param texturePath Imagen correspondiente al tipo de enemigo
      * @param scale Escala segun la pantalla
      * @param xPosition Posicion en x
      * @param yPosition Posicion en y
      */
-    public Enemy(String texturePath, float scale, int xPosition, int yPosition){
-        this.texture = new Texture(Gdx.files.internal(texturePath));
+    public Enemy(String texture, float scale, int xPosition, int yPosition){
+        this.texture = new Texture(Gdx.files.internal(texture));
         this.sprite = new Sprite(this.texture);
         this.sprite.setSize(scale * this.texture.getWidth(), scale * this.texture.getHeight());
         this.sprite.setOrigin(this.sprite.getWidth()/2, this.sprite.getHeight()/2);
         this.sprite.setPosition(xPosition, yPosition);
+    }
+
+    public float getElapsetTime(){
+        return this.elapsedTime;
+    }
+
+    public void setElapsedTime(float elapsedTime){
+        this.elapsedTime = elapsedTime;
+    }
+
+    public void setLastShoot(float lastShoot){
+        this.lastShoot = lastShoot;
+    }
+
+    public float getLastShoot(){
+        return this.lastShoot;
     }
 
     public int getScore() {
@@ -61,15 +79,15 @@ public abstract class Enemy {
     public float getSpeed() {
         return speed;
     }
-/*
-    public PowerUp getPowerUp() {
-        return powerUp;
-    }
+    /*
+        public PowerUp getPowerUp() {
+            return powerUp;
+        }
 
-    public void setPowerUp(PowerUp powerUp) {
-        this.powerUp = powerUp;
-    }
-*/
+        public void setPowerUp(PowerUp powerUp) {
+            this.powerUp = powerUp;
+        }
+    */
     public void setDispose(){
         this.dispose = true;
     }
@@ -88,24 +106,23 @@ public abstract class Enemy {
 
     /**
      * Metodo que se encarga de crear una ruta para el enemigo
-     * @param appHeight altura de la app
-     * @param appWidth anchura de la app
      */
-    public void initialPath(int appWidth, int appHeight) {
-        float xStart = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth()); //Punto inicial
-        float xEnd = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth()); //Punto final
+    public void initialPath() {
+        float xStart = Random.getRandomNumber(0 + sprite.getWidth(), MyGdxGame.appWidth - sprite.getWidth()); //Punto inicial x
+        float xEnd = Random.getRandomNumber(0 + sprite.getWidth(), MyGdxGame.appWidth - sprite.getWidth()); //Punto final x
+        float yEnd = Random.getRandomNumber(0, MyGdxGame.appHeight);
 
         //Componentes del ControlPoint1
-        float controlPoint1X = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth());
-        float controlPoint1Y = Random.getRandomNumber(0 + sprite.getWidth(), appHeight - sprite.getHeight());
+        float controlPoint1X = Random.getRandomNumber(0 + sprite.getWidth(), MyGdxGame.appWidth - sprite.getWidth());
+        float controlPoint1Y = Random.getRandomNumber(0 + sprite.getHeight(), MyGdxGame.appHeight - sprite.getHeight());
 
         //Componentes del ControlPoint2
-        float controlPoint2X = Random.getRandomNumber(0 + sprite.getWidth(), appWidth - sprite.getWidth());
-        float controlPoint2Y = Random.getRandomNumber(0, controlPoint1Y);
+        float controlPoint2X = Random.getRandomNumber(0 + sprite.getWidth(), MyGdxGame.appWidth - sprite.getWidth());
+        float controlPoint2Y = Random.getRandomNumber(0, MyGdxGame.appHeight - sprite.getHeight());//controlPoint1Y);
 
         //Se crean los vectores
-        Vector2 start = new Vector2(xStart, appHeight);
-        Vector2 end = new Vector2(xEnd, -sprite.getHeight());
+        Vector2 start = new Vector2(xStart, MyGdxGame.appHeight);
+        Vector2 end = new Vector2(xEnd, yEnd);
         Vector2 controlPoint1 = new Vector2(controlPoint1X, controlPoint1Y);
         Vector2 controlPoint2 = new Vector2(controlPoint2X, controlPoint2Y);
 
@@ -139,7 +156,7 @@ public abstract class Enemy {
      * Metodo que calcula en angulo de rotacion
      * @return El angulo de rotacion
      */
-    public static double calcRotationAngle(float cX, float cY, float tX, float tY){
+    public double calcRotationAngle(float cX, float cY, float tX, float tY){
         double theta = Math.atan2(tY - cY, tX - cX); //Calcula el angulo theta (en radianes)
         // de los valores de delta y y delta x
         theta += Math.PI/2.0; //Gira el angulo theta 90 grados en direccion horaria

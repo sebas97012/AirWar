@@ -9,7 +9,7 @@ import com.itcr.ce.airwar.MyGdxGame;
 /**
  * Created by Arturo on 4/4/2017.
  */
-public class PlayerPlane {
+public class PlayerShip {
     private Texture texture;
     private Sprite subjectSprite;
     private float planeScale = 1.2f;
@@ -18,7 +18,7 @@ public class PlayerPlane {
     /**
      * Constructor
      */
-    public PlayerPlane(){
+    public PlayerShip(){
         this.texture = new Texture(Gdx.files.internal("airplane/shipright0080.gif"));
         subjectSprite = new Sprite(texture); //Se crea el sprite
         subjectSprite.setSize(planeScale * texture.getWidth(), planeScale * texture.getHeight()); //Se coloca la escala al sprite

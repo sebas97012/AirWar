@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.itcr.ce.airwar.*;
-import com.itcr.ce.airwar.entities.PlayerPlane;
+import com.itcr.ce.airwar.entities.PlayerShip;
 import com.itcr.ce.airwar.levels.Level;
 import com.itcr.ce.airwar.entities.Enemy;
 
@@ -16,7 +16,7 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private Level level;
     private Player player;
-    private PlayerPlane playerPlane;
+    private PlayerShip playerShip;
     private MyInputProcessor inputProcessor;
     private Ground ground;
     private boolean paused = false;
@@ -31,11 +31,11 @@ public class GameScreen implements Screen {
     public GameScreen(MyGdxGame game, Player player) {
         this.game = game;
         this.player = player;
-        this.playerPlane = player.getPlane();
+        this.playerShip = player.getPlane();
         this.level = player.getLevel();
         this.inputProcessor = player.getInputProcessor();
         this.camera = new OrthographicCamera(MyGdxGame.appWidth, MyGdxGame.appHeight); //Se crea una nueva camara
-        this.ground = new Ground(level.getTexture(), MyGdxGame.appWidth, MyGdxGame.appHeight, 80.0f); //Se crea el fondo
+        this.ground = new Ground(level.getTexture(), MyGdxGame.appWidth, MyGdxGame.appHeight, 90.0f); //Se crea el fondo
         camera.translate(0, 0); //Se coloca la camara en la posicion correcta
 
         level.scheduleEnemies(); //Generacion de enemigos
@@ -53,96 +53,164 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         camera.update();
-        //game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin(); //Se empieza a correr la zona donde renderizar
         this.ground.render(game.batch); //Se renderiza el fondo
-        game.font.draw(game.batch, "Score: " + this.score, 20, MyGdxGame.appHeight - 20);
-
-        game.font.draw(game.batch, "Enemigos restantes: " + level.getEnemyCollection().getSize(), 20, MyGdxGame.appHeight - 60);
+        game.font.draw(game.batch, "Lifes: " + this.player.getLifes(), 20, MyGdxGame.appHeight - 30);
+        game.font.draw(game.batch, "Score: " + this.score, 20, MyGdxGame.appHeight - 60);
+        game.font.draw(game.batch, "Remaining enemies: " + level.getEnemyCollection().getSize(), 20, MyGdxGame.appHeight - 90);
 
         if (paused == true) {
-            game.font.draw(game.batch, "Game Paused", 350, 300);
-            game.font.draw(game.batch, "Press ESC to Continue", 350, 250);
+            game.font.draw(game.batch, "Game Paused", (MyGdxGame.appWidth / 2) - 50, (MyGdxGame.appHeight / 2) + 30);
+            game.font.draw(game.batch, "Press ESC to Continue", (MyGdxGame.appWidth / 2) - 50, (MyGdxGame.appHeight / 2) - 30);
         } else {
-            if (player.getHealth() < 0) { //Caso en el que el jugador ha perdido todas las vidas
+            if (player.getLifes() < 1) { //Caso en el que el jugador ha perdido todas las vidas
                 game.setScreen(new DeathScreen(game));
-                dispose();
+                this.dispose();
             } else {
                 if (levelComplete == true) { //Caso en el que el jugador ha completado el nivel
                     player.setLevel(player.getLevel().getNextLevel());
                     //game.setScreen(new LevelCompleteScreen(game, gameState, actionResolver));
                     //dispose();
                 } else {
-                    //RENDERIZADO DE TODOS LOS OBJETOS EN EL MAPA
-                    //RENDERIZADO BALAS JUGADOR
-                    for (int x = 0; x < level.getBulletPlayerCollection().getSize(); x++) {
-                        BulletPlayer bullet = (BulletPlayer) level.getBulletPlayerCollection().getElement(x).getDataT();
-                        bullet.render(game.batch);
-                    }
-
-                    for (int x = 0; x < level.getBulletPlayerCollection().getSize(); x++) {
-                        BulletPlayer bulletPlayer = (BulletPlayer) level.getBulletPlayerCollection().getElement(x).getDataT();
-                        if (bulletPlayer.getY() > MyGdxGame.appHeight - (bulletPlayer.getSprite()).getWidth()) {
-                            bulletPlayer.dispose();
-                            level.getBulletPlayerCollection().deleteElement(x);
-                        }
-                    }
-
-                    //Se verifica si alguna bala a impactado contra un enemigo
-                    for (int x = 0; x < level.getEnemyCollection().getSize(); x++) {
-                        Enemy enemy = (Enemy) level.getEnemyCollection().getElement(x).getDataT();
-                        boolean eliminate = false; //Determina si se ha impactado algun enemigo
-                        int posEnemy = -1;
-                        int posBullet = -1;
-
-                        for (int i = 0; i < level.getBulletPlayerCollection().getSize(); i++) {
-                            BulletPlayer bullet = (BulletPlayer) level.getBulletPlayerCollection().getElement(i).getDataT();
-
-                            if (enemy.checkOverlap(bullet.getSprite().getBoundingRectangle())) { //Si la bala actual esta en colision con el enemigo actual
-                                eliminate = true; //Hay que eliminar la bala y el enemigo
-                                posEnemy = x; //Se guarda la posicion del enemigo en especifico
-                                posBullet = i; //Se guarda la posicion de la bala especifica
-                            }
-                        }
-                        //Se elimina el enemigo si hubo impacto
-                        if (eliminate == true) {
-                            this.score += enemy.getScore();
-
-                            level.getEnemyCollection().deleteElement(posEnemy); //Se elimina el enemigo
-
-                            //Se elimina la bala
-                            level.getBulletPlayerCollection().deleteElement(posBullet); //Se elimina la bala
-                        }
-                    }
-
-                    // TERMINA RENDERIZADO BALAS JUGADOR
-
-                    //EMPIEZA RENDERIZADO DE ENEMIGOS
-                    for (int x = 0; x < level.getEnemyCollection().getSize(); x++) {
-                        Enemy enemy = (Enemy) level.getEnemyCollection().getElement(x).getDataT();
-                        enemy.render(game.batch);
-                        if (enemy.checkOverlap(playerPlane.getSubjectSprite().getBoundingRectangle())) {
-                            this.score += enemy.getScore();
-                            // sound
-                            //pigeon.play();
-                            enemy.setDispose();
-                            level.getEnemyCollection().deleteElement(x); //Se elimina el enemigo
-                            //Explosion exp = new Explosion("explosion19.png", (tmp.x + tmp.sprite.getWidth()/2), tmp.y + tmp.sprite.getHeight()/2);
-                            //expCollection.add(exp);
-                            //expCollectionSize++;
-                        }
-                    }
+                    //Renderizado de objetos en el mapa
+                    this.updateBulletPlayer();
+                    this.updateEnemies();
+                    this.updatePlayerShip();
+                    this.updateBulletEnemies();
+                    this.updateBulletColisions();
+                    level.enemiesShoot();
                 }
-                //TERMINA RENDERIZADO DE ENEMIGOS
+            }
+            inputProcessor.checkInput(Gdx.graphics.getDeltaTime()); //Se asigna el procesador de entradas
+            game.batch.end();
+        }
+    }
 
-                playerPlane.getSubjectSprite().setPosition(playerPlane.getPlaneLocation().x, playerPlane.getPlaneLocation().y); //Se coloca la nave del jugador
-                playerPlane.getSubjectSprite().draw(game.batch); //Se dibuja la nave en el batch                                //en la posicion correspondiente
+    /**
+     * Metodo que se encarga de verificar si hay una colision entre las balas del jugador y las balas del enemigo
+     */
+    private void updateBulletColisions(){
+        for(int x = 0; x < level.getBulletEnemyCollection().getSize(); x++){
+            BulletEnemy bulletEnemy = (BulletEnemy) level.getBulletEnemyCollection().getElement(x).getDataT();
+            boolean collision = false;
+            int posEnemyBullet = -1;
+            int posPlayerBullet = -1;
 
-                //TERMINA RENDERIZADO DE TODOS LOS OBJETOS
+            for(int i = 0; i < level.getBulletPlayerCollection().getSize(); i++){
+                BulletPlayer bulletPlayer = (BulletPlayer) level.getBulletPlayerCollection().getElement(i).getDataT();
+
+                if(bulletEnemy.checkOverlap(bulletPlayer.getSprite().getBoundingRectangle())){
+                    collision = true;
+                    posEnemyBullet = x;
+                    posPlayerBullet = i;
+                }
+            }
+
+            if(collision == true){ //Si la bala del enemigo choco contra alguna del jugador
+                level.getBulletEnemyCollection().deleteElement(posEnemyBullet); //Se elimina de la lista
+                level.getBulletPlayerCollection().deleteElement(posPlayerBullet); //Se elimina de la lista
             }
         }
-        inputProcessor.checkInput(Gdx.graphics.getDeltaTime()); //Se asigna el procesador de entradas
-        game.batch.end();
+    }
+
+    /**
+     * Metodo que se encarga de renderizar la nave del jugador
+     */
+    private void updatePlayerShip(){
+        playerShip.getSubjectSprite().setPosition(playerShip.getPlaneLocation().x, playerShip.getPlaneLocation().y); //Se coloca la nave del jugador
+        playerShip.getSubjectSprite().draw(game.batch); //Se dibuja la nave en el batch                              //en la posicion correspondiente
+
+    }
+
+    /**
+     * Metodo que se encarga de renderizar las balas de los enemigos
+     */
+    private void updateBulletEnemies(){
+        for (int x = 0; x < level.getBulletEnemyCollection().getSize(); x++) {
+            BulletEnemy bullet = (BulletEnemy) level.getBulletEnemyCollection().getElement(x).getDataT();
+            bullet.render(game.batch);
+        }
+
+        for (int x = 0; x < level.getBulletEnemyCollection().getSize(); x++) {
+            BulletEnemy bullet = (BulletEnemy) level.getBulletEnemyCollection().getElement(x).getDataT();
+
+            if(bullet.checkOverlap(playerShip.getSubjectSprite().getBoundingRectangle())){
+                player.setLifes(player.getLifes() - 1);
+                bullet.dispose();
+                level.getBulletEnemyCollection().deleteElement(x);
+            }
+            if (bullet.getY() < -bullet.getSprite().getHeight()) {
+                bullet.dispose();
+                level.getBulletEnemyCollection().deleteElement(x);
+            }
+        }
+    }
+
+    /**
+     * Metodo que se encarga de renderizar los enemigos
+     */
+    private void updateEnemies(){
+        for (int x = 0; x < level.getEnemyCollection().getSize(); x++) {
+            Enemy enemy = (Enemy) level.getEnemyCollection().getElement(x).getDataT();
+            enemy.render(game.batch);
+            if (enemy.checkOverlap(playerShip.getSubjectSprite().getBoundingRectangle())) {
+                // sound
+                //pigeon.play();
+                player.setLifes(player.getLifes() - 1);
+                enemy.setDispose();
+                level.getEnemyCollection().deleteElement(x); //Se elimina el enemigo
+                //Explosion exp = new Explosion("explosion19.png", (tmp.x + tmp.sprite.getWidth()/2), tmp.y + tmp.sprite.getHeight()/2);
+                //expCollection.add(exp);
+                //expCollectionSize++;
+            }
+            if(enemy.getSprite().getY() < -100){
+                enemy.dispose();
+                level.getEnemyCollection().deleteElement(x);
+            }
+        }
+
+    }
+
+    /**
+     * Metodo que se encarga de renderizar las balas del jugador
+     */
+    private void updateBulletPlayer(){
+        for (int x = 0; x < level.getBulletPlayerCollection().getSize(); x++) {
+            BulletPlayer bullet = (BulletPlayer) level.getBulletPlayerCollection().getElement(x).getDataT();
+            bullet.render(game.batch);
+        }
+
+        for (int x = 0; x < level.getBulletPlayerCollection().getSize(); x++) {
+            BulletPlayer bulletPlayer = (BulletPlayer) level.getBulletPlayerCollection().getElement(x).getDataT();
+            if (bulletPlayer.getY() > MyGdxGame.appHeight - (bulletPlayer.getSprite()).getWidth()) { //Si la bala ha salido de la pantalla
+                bulletPlayer.dispose();
+                level.getBulletPlayerCollection().deleteElement(x);
+            }
+        }
+
+        //Se verifica si alguna bala a impactado contra un enemigo
+        for (int x = 0; x < level.getEnemyCollection().getSize(); x++) {
+            Enemy enemy = (Enemy) level.getEnemyCollection().getElement(x).getDataT();
+            boolean eliminate = false; //Determina si se ha impactado algun enemigo
+            int posEnemy = -1;
+            int posBullet = -1;
+
+            for (int i = 0; i < level.getBulletPlayerCollection().getSize(); i++) {
+                BulletPlayer bullet = (BulletPlayer) level.getBulletPlayerCollection().getElement(i).getDataT();
+
+                if (enemy.checkOverlap(bullet.getSprite().getBoundingRectangle())) { //Si la bala actual esta en colision con el enemigo actual
+                    eliminate = true; //Hay que eliminar la bala y el enemigo
+                    posEnemy = x; //Se guarda la posicion del enemigo en especifico
+                    posBullet = i; //Se guarda la posicion de la bala especifica
+                }
+            }
+            //Se elimina el enemigo si hubo impacto
+            if (eliminate == true) {
+                this.score += enemy.getScore();
+                level.getEnemyCollection().deleteElement(posEnemy); //Se elimina el enemigo
+                level.getBulletPlayerCollection().deleteElement(posBullet); //Se elimina la bala
+            }
+        }
     }
 
     public boolean isPaused(){

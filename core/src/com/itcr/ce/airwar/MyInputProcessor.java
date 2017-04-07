@@ -3,19 +3,18 @@ package com.itcr.ce.airwar;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.itcr.ce.airwar.entities.PlayerPlane;
+import com.itcr.ce.airwar.entities.Enemy;
+import com.itcr.ce.airwar.entities.PlayerShip;
 import com.itcr.ce.airwar.levels.*;
 
 /**
  * Created by Arturo on 4/4/2017.
  */
 public class MyInputProcessor implements InputProcessor{
-    private boolean directionKeyReleased;
     private float elapsedTime;
     private float lastInputCheck;
     private Player player;
-    private PlayerPlane playerPlane;
-    private Level level;
+    private PlayerShip playerShip;
 
     /**
      * Constructor
@@ -23,8 +22,7 @@ public class MyInputProcessor implements InputProcessor{
      */
     public MyInputProcessor(Player player){
         this.player = player;
-        this.playerPlane = player.getPlane();
-        this.level = player.getLevel();
+        this.playerShip = player.getPlane();
     }
 
     /**
@@ -32,28 +30,24 @@ public class MyInputProcessor implements InputProcessor{
      * @param deltaTime Tiempo transcurrido entre el frame anterior y el actual
      */
     public void checkInput(float deltaTime) {
-        if ((lastInputCheck + 0.1f) < (elapsedTime)) { //Restriccion para la cadencia de disparo
+        if ((lastInputCheck + 0.15f) < (elapsedTime)) { //Restriccion para la cadencia de disparo
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                 player.getLevel().createPlayerBullet();
                 lastInputCheck = elapsedTime;
             }
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
-            player.getGameScreen().pause();
-        }
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            playerPlane.moveShipX(-1); //Direccion negativa en x
+            playerShip.moveShipX(-1); //Direccion negativa en x
         }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            playerPlane.moveShipX(1); //Direccion positiva en x
+            playerShip.moveShipX(1); //Direccion positiva en x
         }
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-            playerPlane.moveShipY(-1); //Direccion negativa en y
+            playerShip.moveShipY(-1); //Direccion negativa en y
         }
         if(Gdx.input.isKeyPressed(Input.Keys.UP)){
-            playerPlane.moveShipY(1); //Direccion positiva en y
+            playerShip.moveShipY(1); //Direccion positiva en y
         }
-        elapsedTime += deltaTime;
         elapsedTime += Gdx.graphics.getDeltaTime();
     }
 

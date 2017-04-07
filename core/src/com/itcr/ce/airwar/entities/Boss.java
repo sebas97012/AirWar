@@ -1,5 +1,8 @@
 package com.itcr.ce.airwar.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+
 /**
  * Created by Arturo on 1/4/2017.
  */
@@ -13,9 +16,9 @@ public class Boss extends Enemy {
      */
     public Boss(String texturePath, float scale, int xPosition, int yPosition){
         super(texturePath, scale, xPosition, yPosition);
+        this.texture = new Texture(Gdx.files.internal(texturePath));
         this.life = 40; //El boss muere de 40 disparos del jugador
         this.damage = 3; //Mata al jugador de un disparo
         this.speed = 0.15f; ; //Velocidad baja
     }
-
 }
