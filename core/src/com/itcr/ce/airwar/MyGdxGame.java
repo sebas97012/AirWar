@@ -1,0 +1,47 @@
+package com.itcr.ce.airwar;
+
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.itcr.ce.airwar.screens.MenuScreen;
+
+
+/**
+ * Created by Arturo on 5/4/2017.
+ */
+public class MyGdxGame extends Game {
+    public SpriteBatch batch; //Batch donde se renderizan los objetos
+    public BitmapFont font;
+    public static int appWidth;
+    public static int appHeight;
+
+    /**
+     * Constructor
+     * @param appWidth Anchura de la aplicacion
+     * @param appHeight Altura de la aplicacion
+     */
+    public MyGdxGame(int appWidth, int appHeight){
+        this.appWidth = appWidth;
+        this.appHeight = appHeight;
+    }
+
+    /**
+     * Metodo que crea el SpriteBatch y el BitmapFont
+     */
+    public void create() {
+        batch = new SpriteBatch(); //Se crea el batch
+        font = new BitmapFont();
+        this.setScreen(new MenuScreen(this)); //Se le asigna la pantalla a mostrar
+    }
+
+    public void render() {
+        super.render();
+    }
+
+    public void dispose() {
+        batch.dispose();
+        font.dispose();
+    }
+
+
+}
