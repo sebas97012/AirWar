@@ -25,16 +25,17 @@ public class MissileTower extends Enemy {
         super("missileTower/missileTower0000.png", 0.15f);
         this.speed = 0.02911f;
         this.dataSet = new Vector2[2];
+        this.score = 10;
 
         LinkedList<Texture> textures = new LinkedList<Texture>();
-        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missileTower0000.png")));
-        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missileTower0001.png")));
-        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missileTower0002.png")));
-        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missileTower0003.png")));
-        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missileTower0004.png")));
-        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missileTower0005.png")));
-        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missileTower0006.png")));
-        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missileTower0007.png")));
+        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missiletower0000.png")));
+        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missiletower0001.png")));
+        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missiletower0002.png")));
+        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missiletower0003.png")));
+        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missiletower0004.png")));
+        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missiletower0005.png")));
+        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missiletower0006.png")));
+        textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missiletower0007.png")));
 
         TextureRegion[] frames = new TextureRegion[8];
 

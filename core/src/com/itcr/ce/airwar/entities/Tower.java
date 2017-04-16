@@ -25,6 +25,7 @@ public class Tower extends Enemy{
         super("tower/swarmer0000.png", 0.15f);
         this.speed = 0.02911f;
         this.dataSet = new Vector2[2];
+        this.score = 10;
 
         LinkedList<Texture> textures = new LinkedList<Texture>();
         textures.insertAtEnd(new Texture(Gdx.files.internal("tower/swarmer0000.png")));

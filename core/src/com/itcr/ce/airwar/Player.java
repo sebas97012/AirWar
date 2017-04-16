@@ -14,6 +14,7 @@ public class Player {
     private PlayerShip ship;
     private Level level;
     private int numLevel;
+    private int score;
     private MyInputProcessor inputProcessor;
 
     /**
@@ -25,6 +26,7 @@ public class Player {
         this.numLevel = 1;
         this.inputProcessor = new MyInputProcessor(this);
         this.lifes = 5;
+        this.score = 0;
     }
 
     public int getNumLevel() {
@@ -73,6 +75,14 @@ public class Player {
 
     public MyInputProcessor getInputProcessor(){
         return this.inputProcessor;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }
 

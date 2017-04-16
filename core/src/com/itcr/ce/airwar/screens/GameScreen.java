@@ -21,7 +21,6 @@ public class GameScreen implements Screen {
     private Ground ground;
     private boolean paused = false;
     private boolean levelComplete = false;
-    private int score = 0;
 
     /**
      * Constructor
@@ -56,7 +55,7 @@ public class GameScreen implements Screen {
         game.batch.begin(); //Se empieza a correr la zona donde renderizar
         this.ground.render(game.batch); //Se renderiza el fondo
         game.font.draw(game.batch, "Lifes: " + this.player.getLifes(), 20, MyGdxGame.appHeight - 30);
-        game.font.draw(game.batch, "Score: " + this.score, 20, MyGdxGame.appHeight - 60);
+        game.font.draw(game.batch, "Score: " + player.getScore(), 20, MyGdxGame.appHeight - 60);
         game.font.draw(game.batch, "Remaining enemies: " + level.getEnemyQueue().getSize(), 20, MyGdxGame.appHeight - 90);
 
         if (paused == true) {
@@ -64,6 +63,7 @@ public class GameScreen implements Screen {
             game.font.draw(game.batch, "Press ESC to Continue", (MyGdxGame.appWidth / 2) - 50, (MyGdxGame.appHeight / 2) - 30);
         } else {
             if (player.getLifes() < 1) { //Caso en el que el jugador ha perdido todas las vidas
+                player.setScore(0); //Se reinicia el score del jugador
                 game.setScreen(new DeathScreen(game, player));
                 this.dispose();
             } else {
@@ -220,7 +220,7 @@ public class GameScreen implements Screen {
             }
             //Se elimina el enemigo si hubo impacto
             if (eliminate == true) {
-                this.score += enemy.getScore();
+                player.setScore(player.getScore() + enemy.getScore());
                 level.getEnemyCollection().deleteElement(posEnemy); //Se elimina el enemigo
                 level.getBulletPlayerCollection().deleteElement(posBullet); //Se elimina la bala
             }

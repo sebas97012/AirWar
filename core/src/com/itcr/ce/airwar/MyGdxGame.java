@@ -12,6 +12,7 @@ import com.itcr.ce.airwar.screens.MenuScreen;
 public class MyGdxGame extends Game {
     public SpriteBatch batch; //Batch donde se renderizan los objetos
     public BitmapFont font;
+    public static Player player;
     public static int appWidth;
     public static int appHeight;
 
@@ -31,6 +32,7 @@ public class MyGdxGame extends Game {
     public void create() {
         batch = new SpriteBatch(); //Se crea el batch
         font = new BitmapFont();
+        this.player = new Player(); //Se crea el jugador
         this.setScreen(new MenuScreen(this)); //Se le asigna la pantalla a mostrar
     }
 

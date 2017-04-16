@@ -42,8 +42,7 @@ public class MenuScreen implements Screen{
         game.batch.begin();
         game.batch.end();
 
-        Player player = new Player();
-        GameScreen gameScreen = new GameScreen(game, player);
+        GameScreen gameScreen = new GameScreen(game, MyGdxGame.player);
         game.setScreen(gameScreen);
     }
 
