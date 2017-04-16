@@ -13,6 +13,7 @@ public class Player {
     private int munition = 0;
     private PlayerShip ship;
     private Level level;
+    private int numLevel;
     private MyInputProcessor inputProcessor;
 
     /**
@@ -20,9 +21,18 @@ public class Player {
      */
     public Player(){
         this.ship = new PlayerShip();
-        this.level = new Level(this);
+        this.level = new Level(this, 30);
+        this.numLevel = 1;
         this.inputProcessor = new MyInputProcessor(this);
         this.lifes = 5;
+    }
+
+    public int getNumLevel() {
+        return numLevel;
+    }
+
+    public void setNumLevel(int numLevel) {
+        this.numLevel = numLevel;
     }
 
     public void setLevel(Level level){

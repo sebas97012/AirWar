@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.itcr.ce.airwar.BulletEnemy;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Random;
 
@@ -36,16 +37,14 @@ public abstract class Enemy {
 
     /**
      * Constructor
-     * @param scale Escala segun la pantalla
-     * @param xPosition Posicion en x
-     * @param yPosition Posicion en y
+     * @param texturePath Ruta de la textura del enemigo
+     * @param scale Escala
      */
-    public Enemy(String texture, float scale, int xPosition, int yPosition){
-        this.texture = new Texture(Gdx.files.internal(texture));
+    public Enemy(String texturePath, float scale){
+        this.texture = new Texture(Gdx.files.internal(texturePath));
         this.sprite = new Sprite(this.texture);
         this.sprite.setSize(scale * this.texture.getWidth(), scale * this.texture.getHeight());
         this.sprite.setOrigin(this.sprite.getWidth()/2, this.sprite.getHeight()/2);
-        this.sprite.setPosition(xPosition, yPosition);
     }
 
     public float getElapsetTime(){

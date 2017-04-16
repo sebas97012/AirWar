@@ -17,7 +17,7 @@ public class BulletEnemy {
     private Sprite sprite;
     private Sound sound;
     private Vector2 out = new Vector2();
-    private Vector2[] dataSet = new Vector2[2];
+    private Vector2[] dataSet = new Vector2[3];
     private CatmullRomSpline<Vector2> path;
     private float current = 0;
     private float x;
@@ -65,12 +65,14 @@ public class BulletEnemy {
      * @param xStart Posicion inicial en el eje x
      * @param yStart Posicion inicial en el eje y
      */
-    public void initialPath(float xStart, float yStart) {
+    public void initialPath(float xStart, float yStart, float cpx, float cpy) {
         Vector2 start = new Vector2(xStart, yStart); //Posicion inicial
-        Vector2 end = new Vector2(xStart, (-2 * this.sprite.getHeight())); //Posicion final
+        Vector2 controlPoint = new Vector2(cpx, cpy);
+        Vector2 end = new Vector2(cpx, (-2 * this.sprite.getHeight()));
 
         dataSet[0] = start;
-        dataSet[1] = end;
+        dataSet[1] = controlPoint;
+        dataSet[2] = end;
 
         path = new CatmullRomSpline<Vector2>(dataSet, true); //Trayecto que va a seguir la bala
     }
@@ -85,11 +87,29 @@ public class BulletEnemy {
             current -= 1;
 
         path.valueAt(out, current); //Se calcula el vector segun el deltaTime
+        sprite.setRotation((float)this.calcRotationAngle(x, y, out.x, out.y)-180);
         x = out.x; //Componente x del vector
         y = out.y; //Componente y del vector
 
         sprite.setPosition(x, y); //Se le coloca en la posicion "x" y "y" correspondiente
         sprite.draw(batch);  //Se dibuja en el batch
+    }
+
+    /**
+     * Metodo que calcula en angulo de rotacion
+     * @return El angulo de rotacion
+     */
+    public double calcRotationAngle(float cX, float cY, float tX, float tY){
+        double theta = Math.atan2(tY - cY, tX - cX); //Calcula el angulo theta (en radianes)
+        // de los valores de delta y y delta x
+        theta += Math.PI/2.0; //Gira el angulo theta 90 grados en direccion horaria
+
+        double angle = Math.toDegrees(theta); //Convierte a grados
+        if(angle < 0){ //Si es angulo es negativo lo pasamos a positivo
+            angle += 360;
+        }
+
+        return angle;
     }
 
     /**

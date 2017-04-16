@@ -38,7 +38,7 @@ public class GameScreen implements Screen {
         this.ground = new Ground(level.getTexture(), MyGdxGame.appWidth, MyGdxGame.appHeight, 90.0f); //Se crea el fondo
         camera.translate(0, 0); //Se coloca la camara en la posicion correcta
 
-        level.scheduleEnemies(); //Generacion de enemigos
+        level.spawnEnemies(); //Generacion de enemigos
     }
 
     @Override
@@ -57,14 +57,14 @@ public class GameScreen implements Screen {
         this.ground.render(game.batch); //Se renderiza el fondo
         game.font.draw(game.batch, "Lifes: " + this.player.getLifes(), 20, MyGdxGame.appHeight - 30);
         game.font.draw(game.batch, "Score: " + this.score, 20, MyGdxGame.appHeight - 60);
-        game.font.draw(game.batch, "Remaining enemies: " + level.getEnemyCollection().getSize(), 20, MyGdxGame.appHeight - 90);
+        game.font.draw(game.batch, "Remaining enemies: " + level.getEnemyQueue().getSize(), 20, MyGdxGame.appHeight - 90);
 
         if (paused == true) {
             game.font.draw(game.batch, "Game Paused", (MyGdxGame.appWidth / 2) - 50, (MyGdxGame.appHeight / 2) + 30);
             game.font.draw(game.batch, "Press ESC to Continue", (MyGdxGame.appWidth / 2) - 50, (MyGdxGame.appHeight / 2) - 30);
         } else {
             if (player.getLifes() < 1) { //Caso en el que el jugador ha perdido todas las vidas
-                game.setScreen(new DeathScreen(game));
+                game.setScreen(new DeathScreen(game, player));
                 this.dispose();
             } else {
                 if (levelComplete == true) { //Caso en el que el jugador ha completado el nivel
