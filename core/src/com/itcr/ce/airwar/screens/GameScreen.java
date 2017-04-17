@@ -7,7 +7,6 @@ import com.itcr.ce.airwar.*;
 import com.itcr.ce.airwar.entities.PlayerShip;
 import com.itcr.ce.airwar.levels.Level;
 import com.itcr.ce.airwar.entities.Enemy;
-import com.itcr.ce.airwar.server.Bridge;
 
 /**
  * Created by Arturo on 5/4/2017.
@@ -16,7 +15,7 @@ public class GameScreen implements Screen {
     final MyGdxGame game;
     private OrthographicCamera camera;
     private Level level;
-    public static Player player;
+    private Player player;
     private PlayerShip playerShip;
     private MyInputProcessor inputProcessor;
     private Ground ground;

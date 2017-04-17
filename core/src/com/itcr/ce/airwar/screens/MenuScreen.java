@@ -5,8 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.itcr.ce.airwar.MyGdxGame;
-import com.itcr.ce.airwar.Player;
-import com.itcr.ce.airwar.levels.Level;
 
 /**
  * Created by Arturo on 5/4/2017.

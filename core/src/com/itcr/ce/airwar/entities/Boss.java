@@ -12,10 +12,8 @@ public class Boss extends Enemy {
      * @param texturePath Textura que va a tener el enemigo
      * @param scale Escala deseada para la textura
      */
-    public Boss(String texturePath, float scale){
-        super(texturePath, scale);
-        this.life = 40; //El boss muere de 40 disparos del jugador
-        this.damage = 3; //Mata al jugador de un disparo
-        this.speed = 0.15f; ; //Velocidad baja
+    public Boss(String texturePath, float scale, int life){
+        super(texturePath, scale, life);
+        this.speed = 0.15f; //Velocidad baja
     }
 }

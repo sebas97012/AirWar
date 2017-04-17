@@ -19,7 +19,7 @@ public class PlayerShip {
      * Constructor
      */
     public PlayerShip(){
-        this.texture = new Texture(Gdx.files.internal("airplane/shipright0080.gif"));
+        this.texture = new Texture(Gdx.files.internal("ships/playership.gif"));
         subjectSprite = new Sprite(texture); //Se crea el sprite
         subjectSprite.setSize(planeScale * texture.getWidth(), planeScale * texture.getHeight()); //Se coloca la escala al sprite
     }

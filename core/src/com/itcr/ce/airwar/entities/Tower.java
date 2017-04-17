@@ -21,8 +21,8 @@ public class Tower extends Enemy{
     /**
      * Constructor
      */
-    public Tower(){
-        super("tower/swarmer0000.png", 0.15f);
+    public Tower(int life){
+        super("tower/swarmer0000.png", 0.15f, life);
         this.speed = 0.02911f;
         this.dataSet = new Vector2[2];
         this.score = 10;

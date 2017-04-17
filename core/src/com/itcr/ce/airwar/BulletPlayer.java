@@ -55,6 +55,10 @@ public class BulletPlayer {
         return this.sound;
     }
 
+    public int getDamage() {
+        return damage;
+    }
+
     /**
      * Calcula el camino que va a seguir la bala
      * @param x Posicion inicial en el eje x

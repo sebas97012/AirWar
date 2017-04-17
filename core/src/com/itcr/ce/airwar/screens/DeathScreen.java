@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Player;
-import com.itcr.ce.airwar.levels.Level;
+import com.itcr.ce.airwar.levels.*;
 
 /**
  * Created by Arturo on 5/4/2017.
@@ -51,8 +51,6 @@ public class DeathScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 player.setLifes(5);
-                if(player.getNumLevel() == 1){
-                    player.setLevel(new Level(player, 30));}
                 player.getShip().getPlaneLocation().x = 0;
                 player.getShip().getPlaneLocation().y = 0;
                 game.setScreen(new GameScreen(game, player));

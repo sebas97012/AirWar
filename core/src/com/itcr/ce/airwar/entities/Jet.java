@@ -10,11 +10,9 @@ public class Jet extends Enemy {
     /**
      * Constructor
      */
-    public Jet(){
-        super("airplane/shipblue0020.png", 0.45f);
+    public Jet(int life){
+        super("ships/jetship.png", 0.45f, life);
         this.score = 5;
-        this.life = 3; //Muere de tres disparos
-        this.damage = 1; //Mata al jugador de tres disparos
         this.speed = 0.15f; //Alta velocidad
     }
 }
