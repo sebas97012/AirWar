@@ -1,7 +1,10 @@
 package com.itcr.ce.airwar.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector2;
+import com.itcr.ce.airwar.BulletEnemy;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.data.Random;
 
@@ -15,19 +18,27 @@ public class Kamikaze extends Enemy {
 
     /**
      * Constructor
-     * @param scale Escala deseada para la textura del kamikaze
-     * @param xPosStart Posicion inicial en x
-     * @param yPosStart Posicion inicial en y
-     * @param xPosPlayer Posicion en x en la que se encuentra el jugador
-     * @param yPosPlayer Posicion en y en la que se encuentra el jugador
      */
-    public Kamikaze(float scale, int xPosStart, int yPosStart, float xPosPlayer, float yPosPlayer){
-        super("airplane/shipgreen0001.gif", scale, xPosStart, yPosStart);
+    public Kamikaze(int life){
+        super("ships/kamikazeship.gif", 1.3f, life);
         this.score = 20;
         this.speed = 0.3f;
-        this.xPosPlayer = xPosPlayer;
-        this.yPosPlayer = yPosPlayer;
         this.dataSet = new Vector2[3];
+    }
+
+    /**
+     * Se establece la posicion en la que se encuentra el jugador
+     * @param xPos Posicion en el eje x del jugador
+     * @param yPos Posicion en el eje y del jugador
+     */
+    public void setPositionPlayer(float xPos, float yPos){
+        this.xPosPlayer = xPos;
+        this.yPosPlayer = yPos;
+    }
+
+    @Override
+    public BulletEnemy shoot(){
+        return null;
     }
 
     /**

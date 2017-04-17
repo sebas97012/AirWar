@@ -5,7 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.itcr.ce.airwar.MyGdxGame;
-import com.itcr.ce.airwar.Player;
 
 /**
  * Created by Arturo on 5/4/2017.
@@ -33,7 +32,6 @@ public class MenuScreen implements Screen{
     @Override
     public void render(float delta) {
         Gdx.gl.glViewport(0, 0, MyGdxGame.appWidth, MyGdxGame.appHeight);
-        //Gdx.gl.glViewport(0, 0, MyGdxGame.appWidth, MyGdxGame.appHeight);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
@@ -42,8 +40,7 @@ public class MenuScreen implements Screen{
         game.batch.begin();
         game.batch.end();
 
-        Player player = new Player();
-        GameScreen gameScreen = new GameScreen(game, player);
+        GameScreen gameScreen = new GameScreen(game, MyGdxGame.player);
         game.setScreen(gameScreen);
     }
 

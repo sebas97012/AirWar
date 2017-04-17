@@ -7,8 +7,8 @@ package com.itcr.ce.data;
  */
 public class LinkedList<T> {
 
-    private Node first;
-    private int size;
+    protected Node first;
+    protected int size;
 
     public LinkedList() {
         this.first = null;

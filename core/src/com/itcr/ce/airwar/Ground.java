@@ -53,15 +53,11 @@ public class Ground {
         }
         ground.translateY(Math.round(deltaYV));
         ground2.translateY(Math.round(deltaYV));
-        //System.out.println("g1 pos: x-"+(int)(ground.getX())+" y:"+(int)(ground.getY()));
-        //System.out.println("g2 pos: x-"+(int)(ground2.getX())+" y:"+(int)(ground2.getY()));
         ground.draw(batch);
         ground2.draw(batch);
-       // elapsedTime = Gdx.graphics.getDeltaTime() * _yVelocity;
     }
 
     public void dispose(){
         texture.dispose();
     }
 }
-

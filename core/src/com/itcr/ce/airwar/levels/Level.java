@@ -1,150 +1,59 @@
 package com.itcr.ce.airwar.levels;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Timer;
-import com.itcr.ce.airwar.entities.*;
-import com.itcr.ce.airwar.Player;
-import com.itcr.ce.airwar.entities.PlayerShip;
-import com.itcr.ce.data.*;
-import com.itcr.ce.airwar.*;
-import com.itcr.ce.airwar.Random;
-
 /**
- * Created by Arturo on 4/4/2017.
+ * Created by Arturo on 16/4/2017.
  */
-public class Level {
-    private Level nextLevel;
-    private Player player;
-    private PlayerShip playerShip;
-    private String texture = "ground/space-2.png";
-    private LinkedList<BulletPlayer> bulletPlayerCollection = new LinkedList<BulletPlayer>();
-    private LinkedList<Enemy> enemyCollection = new LinkedList<Enemy>();
-    private LinkedList<BulletEnemy> bulletEnemyCollection = new LinkedList<BulletEnemy>();
-    private LinkedList<Explosion> explosionCollection = new LinkedList<Explosion>();
+public abstract class Level {
+    protected Level nextLevel; //Nivel siguiente
+    protected String backgroundTexturePath; //Fondo del nivel
+    protected int numLevel; //Numero de nivel
 
-    /**
-     * Constructor
-     * @param player Jugador
-     */
-    public Level(Player player) {
-        this.player = player;
-        this.playerShip = player.getShip();
-    }
-
-    public String getTexture(){
-        return this.texture;
-    }
+    //Atributos que almacenan la vida que va a tener cada enemigo según el nivel correspondiente
+    protected int bossHealt;
+    protected int fighterBomberHealt;
+    protected int jetHealth;
+    protected int kamikazeHealth;
+    protected int missileTowerHealth;
+    protected int towerHealth;
+    protected int numberOfEnemies;
 
     public Level getNextLevel() {
-        return this.nextLevel;
+        return nextLevel;
     }
 
-    public LinkedList<BulletPlayer> getBulletPlayerCollection() {
-        return bulletPlayerCollection;
+    public String getBackgroundTexturePath() {
+        return backgroundTexturePath;
     }
 
-    public LinkedList<Enemy> getEnemyCollection() {
-        return enemyCollection;
+    public int getNumLevel() {
+        return numLevel;
     }
 
-    public LinkedList<BulletEnemy> getBulletEnemyCollection() {
-        return bulletEnemyCollection;
+    public int getBossHealt() {
+        return bossHealt;
     }
 
-    public LinkedList<Explosion> getExplosionCollection() {
-        return explosionCollection;
+    public int getFighterBomberHealt() {
+        return fighterBomberHealt;
     }
 
-    /**
-     * Metodo que se encarga de crear una bala del jugador
-     */
-    public void createPlayerBullet() {
-        float x = playerShip.getSubjectSprite().getX() + (playerShip.getTexture().getWidth() / 2); //Se obtiene la posicion del jugador en el eje x
-        float y = playerShip.getSubjectSprite().getY() + 50 + (playerShip.getTexture().getHeight() / 4); //Se obtiene la posicion del jugador en el eje y
-
-        BulletPlayer bullet = null;
-
-        if(player.getMunition() > 0){ //Si el jugador tiene municion de algun power up
-            if(player.getMunitionType() == "laser"){ //Power up laser
-                bullet = new BulletPlayer("bullets/defaultBullet.png", "sounds/pew.wav", 1.2f, (int) x, (int) y, 0.75f, 1); //Se la bala tipo laser
-            }
-            if(player.getMunitionType() == "misiles"){ //Power up misil
-                bullet = new BulletPlayer("bullets/defaultBullet.png", "sounds/pew.wav", 1.2f, (int) x, (int) y, 0.75f, 1); //Se la bala tipo misil
-            }
-            player.setMunition(player.getMunition() - 1); //Se elimina la municion utilizada
-        } else {
-            bullet = new BulletPlayer("bullets/defaultBullet.png", "sounds/pew.wav", 1.2f, (int) x, (int) y, 0.75f, 1); //Se crea la bala por defecto
-        }
-        bullet.initialPath((int) x, (int) y, MyGdxGame.appHeight); //Se el asigna la trayectoria
-
-        bullet.getSound().play(0.03f);
-        bulletPlayerCollection.insertAtEnd(bullet); //Se añade a la lista de balas
+    public int getJetHealth() {
+        return jetHealth;
     }
 
-    public void enemiesShoot(){
-        for(int i = 0; i < this.enemyCollection.getSize(); i++){
-            Enemy enemy = (Enemy) this.enemyCollection.getElement(i).getDataT();
-
-            this.createBulletEnemy(enemy);
-        }
+    public int getKamikazeHealth() {
+        return kamikazeHealth;
     }
 
-    /**
-     * Metodo que se encarga de crear una bala enemiga
-     */
-    private void createBulletEnemy(Enemy enemy) {
-        float xStart = enemy.getSprite().getX() + (enemy.getSprite().getWidth() / 2);
-        float yStart = enemy.getSprite().getY();
-
-        if (enemy.getClass() != Kamikaze.class) {
-            if ((enemy.getLastShoot() + 0.60f) < enemy.getElapsetTime()) {
-                BulletEnemy bullet = new BulletEnemy("bullets/defaultBullet.png", 1.2f, xStart, yStart - 20, 0.50f, 1);
-                bullet.initialPath(xStart, yStart);
-                bulletEnemyCollection.insertAtEnd(bullet);
-                bullet.getSound().play();
-                enemy.setLastShoot(enemy.getElapsetTime());
-            }
-
-            enemy.setElapsedTime(enemy.getElapsetTime() + Gdx.graphics.getDeltaTime());
-        }
+    public int getMissileTowerHealth() {
+        return missileTowerHealth;
     }
 
-    public void createExplosion(float xPos, float yPos, float width, float height){
-        Explosion explosion = new Explosion(xPos, yPos, width, height);
-        explosion.getSound().play(0.10f);
-        this.explosionCollection.insertAtEnd(explosion);
+    public int getTowerHealth() {
+        return towerHealth;
     }
 
-    public void scheduleEnemies(){
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                EnemiesAndClouds();
-            }
-        }, 0, 1.0f);
-    }
-
-    public void EnemiesAndClouds()
-    {
-        Integer GoOrNot = Math.round((float)Math.random());
-        if(GoOrNot == 1){
-            Enemy enemy;
-
-            int randomEnemy = Random.getRandomNumber(0, 2);
-            if(randomEnemy  == 1) {
-                enemy = new Jet(0.45f, MyGdxGame.appWidth / 2, MyGdxGame.appHeight / 2);
-            }else {
-                if (randomEnemy == 0) {
-                    float xPosEnd = this.playerShip.getPlaneLocation().x;
-                    float yPosEnd = this.playerShip.getPlaneLocation().y;
-                    enemy = new Kamikaze(1.3f, MyGdxGame.appWidth / 2, MyGdxGame.appHeight / 2, xPosEnd, yPosEnd);
-                }else {
-                    enemy = new FighterBomber(0.45f, MyGdxGame.appWidth / 2, MyGdxGame.appHeight / 2);
-
-                }
-            }
-            enemy.initialPath();
-            enemyCollection.insertAtEnd(enemy);
-        }
+    public int getNumberOfEnemies() {
+        return numberOfEnemies;
     }
 }
