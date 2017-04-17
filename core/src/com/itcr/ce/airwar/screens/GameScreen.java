@@ -7,6 +7,7 @@ import com.itcr.ce.airwar.*;
 import com.itcr.ce.airwar.entities.PlayerShip;
 import com.itcr.ce.airwar.levels.Level;
 import com.itcr.ce.airwar.entities.Enemy;
+import com.itcr.ce.airwar.server.Bridge;
 
 /**
  * Created by Arturo on 5/4/2017.

@@ -12,7 +12,7 @@ import java.awt.event.KeyEvent;
 
 public class Bridge {
 
-    public TCPServer Server;
+    public static TCPServer Server;
 
     public Bridge() {
 
@@ -54,7 +54,7 @@ public class Bridge {
         Server.start();
 
     }
-    public void UpdateServer(){
+    public static void UpdateServer(){
         Server.sendMessage("L:"+Integer.toString(MyGdxGame.player.getLifes()));
         Server.sendMessage("S:"+Integer.toString(MyGdxGame.player.getScore()));
     }
