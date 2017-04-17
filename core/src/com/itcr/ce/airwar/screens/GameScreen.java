@@ -15,7 +15,7 @@ public class GameScreen implements Screen {
     final MyGdxGame game;
     private OrthographicCamera camera;
     private Level level;
-    private Player player;
+    public static Player player;
     private PlayerShip playerShip;
     private MyInputProcessor inputProcessor;
     private Ground ground;

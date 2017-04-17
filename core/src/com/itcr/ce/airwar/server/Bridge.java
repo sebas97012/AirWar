@@ -4,6 +4,8 @@ package com.itcr.ce.airwar.server;
  * Created by Sebas Mora on 28/03/2017.
  */
 
+import com.itcr.ce.airwar.MyGdxGame;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
@@ -51,5 +53,9 @@ public class Bridge {
         });
         Server.start();
 
+    }
+    public void UpdateServer(){
+        Server.sendMessage("L:"+Integer.toString(MyGdxGame.player.getLifes()));
+        Server.sendMessage("S:"+Integer.toString(MyGdxGame.player.getScore()));
     }
 }

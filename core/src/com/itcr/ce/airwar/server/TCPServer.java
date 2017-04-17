@@ -10,7 +10,7 @@ import java.net.Socket;
 
 public class TCPServer extends Thread {
 
-    public static final int SERVERPORT = 4445;
+    public static final int SERVERPORT = 8085;
     private boolean running = false;
     private PrintWriter mOut;
     private OnMessageReceived messageListener;

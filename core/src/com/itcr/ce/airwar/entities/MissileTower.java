@@ -22,7 +22,7 @@ public class MissileTower extends Enemy {
      * Constructor
      */
     public MissileTower() {
-        super("missileTower/missileTower0000.png", 0.15f);
+        super("missileTower/missiletower0000.png", 0.15f);
         this.speed = 0.02911f;
         this.dataSet = new Vector2[2];
         this.score = 10;
