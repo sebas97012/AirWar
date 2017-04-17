@@ -85,6 +85,5 @@ public class Tower extends Enemy{
         y = out.y;
         sprite.setPosition(x, y); //Se coloca en la posicion
         sprite.draw(batch); //Se dibuja
-
     }
 }

@@ -105,4 +105,3 @@ public class BulletPlayer {
         texture.dispose();
     }
 }
-

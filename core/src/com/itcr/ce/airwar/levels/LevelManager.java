@@ -1,6 +1,5 @@
 package com.itcr.ce.airwar.levels;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Timer;
 import com.itcr.ce.airwar.entities.*;
 import com.itcr.ce.airwar.Player;
