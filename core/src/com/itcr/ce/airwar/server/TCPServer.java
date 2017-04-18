@@ -11,50 +11,84 @@ import java.net.Socket;
 public class TCPServer extends Thread {
 
     public static final int SERVERPORT = 8085;
+    // while this is true the server will run
     private boolean running = false;
-    private PrintWriter mOut;
+    // used to send messages
+    private PrintWriter bufferSender;
+    // callback used to notify new messages received
     private OnMessageReceived messageListener;
-
+    private ServerSocket serverSocket;
+    private Socket client;
 
     /**
      * Constructor of the class
+     *
      * @param messageListener listens for the messages
      */
     public TCPServer(OnMessageReceived messageListener) {
         this.messageListener = messageListener;
     }
 
+
+    /**
+     * Close the server
+     */
+    public void close() {
+
+        running = false;
+
+        if (bufferSender != null) {
+            bufferSender.flush();
+            bufferSender.close();
+            bufferSender = null;
+        }
+
+        try {
+            client.close();
+            serverSocket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("S: Done.");
+        serverSocket = null;
+        client = null;
+
+    }
+
     /**
      * Method to send the messages from server to client
+     *
      * @param message the message sent by the server
      */
-    public void sendMessage(String message){
-        if (mOut != null && !mOut.checkError()) {
-            mOut.println(message);
-            mOut.flush();
+    public void sendMessage(String message) {
+        if (bufferSender != null && !bufferSender.checkError()) {
+            bufferSender.println(message);
+            bufferSender.flush();
         }
     }
 
-    @Override
-    public void run() {
-        super.run();
-
+    /**
+     * Builds a new server connection
+     */
+    private void runServer() {
         running = true;
 
         try {
             System.out.println("S: Connecting...");
 
             //create a server socket. A server socket waits for requests to come in over the network.
-            ServerSocket serverSocket = new ServerSocket(SERVERPORT);
+            serverSocket = new ServerSocket(SERVERPORT);
 
             //create client socket... the method accept() listens for a connection to be made to this socket and accepts it.
-            Socket client = serverSocket.accept();
+            client = serverSocket.accept();
+
             System.out.println("S: Receiving...");
 
             try {
 
                 //sends the message to the client
-                mOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(client.getOutputStream())), true);
+                bufferSender = new PrintWriter(new BufferedWriter(new OutputStreamWriter(client.getOutputStream())), true);
 
                 //read the message received from client
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -62,10 +96,15 @@ public class TCPServer extends Thread {
                 //in this while we wait to receive messages from client (it's an infinite loop)
                 //this while it's like a listener for messages
                 while (running) {
-                    String message = in.readLine();
+
+                    String message = null;
+                    try {
+                        message = in.readLine();
+                    } catch (IOException e) {
+                        System.out.println("Error reading message: " + e.getMessage());
+                    }
 
                     if (message != null && messageListener != null) {
-                        //call the method messageReceived from Bridge class
                         messageListener.messageReceived(message);
                     }
                 }
@@ -73,15 +112,19 @@ public class TCPServer extends Thread {
             } catch (Exception e) {
                 System.out.println("S: Error");
                 e.printStackTrace();
-            } finally {
-                client.close();
-                System.out.println("S: Done.");
             }
 
         } catch (Exception e) {
             System.out.println("S: Error");
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void run() {
+        super.run();
+
+        runServer();
 
     }
 
