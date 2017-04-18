@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector2;
+import com.itcr.ce.airwar.BulletEnemy;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.data.Random;
 
@@ -18,8 +19,8 @@ public class Kamikaze extends Enemy {
     /**
      * Constructor
      */
-    public Kamikaze(){
-        super("airplane/shipgreen0001.gif", 1.3f);
+    public Kamikaze(int life){
+        super("ships/kamikazeship.gif", 1.3f, life);
         this.score = 20;
         this.speed = 0.3f;
         this.dataSet = new Vector2[3];
@@ -33,6 +34,11 @@ public class Kamikaze extends Enemy {
     public void setPositionPlayer(float xPos, float yPos){
         this.xPosPlayer = xPos;
         this.yPosPlayer = yPos;
+    }
+
+    @Override
+    public BulletEnemy shoot(){
+        return null;
     }
 
     /**

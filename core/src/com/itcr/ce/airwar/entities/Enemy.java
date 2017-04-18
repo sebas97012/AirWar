@@ -1,6 +1,7 @@
 package com.itcr.ce.airwar.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,7 +16,9 @@ import com.itcr.ce.airwar.Random;
  * Created by Arturo on 25/3/2017.
  */
 public abstract class Enemy {
+    protected Sound hitSound;
     //Atributos que tienen que ver con la parte grafica
+    protected String bulletTexturePath;
     protected Texture texture;
     protected Sprite sprite;
     protected Vector2 out = new Vector2();
@@ -26,12 +29,11 @@ public abstract class Enemy {
     protected float y;
     protected boolean dispose = false;
     protected float lastShoot;
-    protected float elapsedTime;
+    protected float elapsedTime; //Tiempo de disparo transcurrido
 
     //Atributos que tienen que ver con la parte logica
     protected int score;
     protected int life;
-    protected int damage;
     //protected PowerUp powerUp;
     protected float speed;
 
@@ -40,27 +42,18 @@ public abstract class Enemy {
      * @param texturePath Ruta de la textura del enemigo
      * @param scale Escala
      */
-    public Enemy(String texturePath, float scale){
+    public Enemy(String texturePath, float scale, int life){
+        this.life = life;
         this.texture = new Texture(Gdx.files.internal(texturePath));
         this.sprite = new Sprite(this.texture);
         this.sprite.setSize(scale * this.texture.getWidth(), scale * this.texture.getHeight());
         this.sprite.setOrigin(this.sprite.getWidth()/2, this.sprite.getHeight()/2);
+        this.bulletTexturePath = "bullets/defaultBullet.png"; //Ruta de la textura de la bala
+        this.hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/hit.wav")); //Se crea el sonido de cuando golpean un enemigo
     }
 
-    public float getElapsetTime(){
-        return this.elapsedTime;
-    }
-
-    public void setElapsedTime(float elapsedTime){
-        this.elapsedTime = elapsedTime;
-    }
-
-    public void setLastShoot(float lastShoot){
-        this.lastShoot = lastShoot;
-    }
-
-    public float getLastShoot(){
-        return this.lastShoot;
+    public Sound getHitSound() {
+        return hitSound;
     }
 
     public int getScore() {
@@ -71,13 +64,6 @@ public abstract class Enemy {
         return life;
     }
 
-    public int getDamage() {
-        return damage;
-    }
-
-    public float getSpeed() {
-        return speed;
-    }
     /*
         public PowerUp getPowerUp() {
             return powerUp;
@@ -99,8 +85,61 @@ public abstract class Enemy {
         return this.out;
     }
 
-    public CatmullRomSpline getPath(){
-        return this.path;
+    /**
+     * Metodo que crea una bala no teledirigida
+     * @return La bala enemiga
+     */
+    public BulletEnemy shoot(){
+        float xStart = this.sprite.getX() + (this.sprite.getWidth() / 2); //Se obtiene la posicion en x inicial de la bala
+        float yStart = this.sprite.getY(); //Se obtiene la posicion inicial en y de la bala
+        BulletEnemy bullet = null;
+
+        if ((this.lastShoot + 0.60f) < this.elapsedTime) {
+            bullet = new BulletEnemy(this.bulletTexturePath, 1.2f, xStart, yStart - 20, 0.50f, 1); //Se crea la bala
+            bullet.initialPath(xStart, yStart, xStart, (-2 * this.sprite.getHeight())); //Se establece el camino que va a seguir
+            this.lastShoot = this.elapsedTime;
+        }
+        this.elapsedTime = this.elapsedTime + Gdx.graphics.getDeltaTime();
+
+        return bullet;
+    }
+
+    /**
+     * Metodo que crea una bala teledirigida
+     * @param xEnd Posicion en x a donde dirigirse
+     * @param yEnd Posicion en y a donde dirigirse
+     * @return La bala enemiga
+     */
+    public BulletEnemy shoot(float xEnd, float yEnd){
+        float xStart = this.sprite.getX() + (this.sprite.getWidth() / 2); //Se obtiene la posicion en x inicial de la bala
+        float yStart = this.sprite.getY(); //Se obtiene la posicion inicial en y de la bala
+        BulletEnemy bullet = null;
+
+        if ((this.lastShoot + 3.0f) < this.elapsedTime) {
+            float scale = 0;
+            float speed = 0;
+
+            if(this.bulletTexturePath == "bullets/defaultBullet.png") { //En caso de usar la textura por defecto
+                scale = 1.2f; //Escala de la bala por defecto
+                speed = 0.50f; //Velocidad de la bala por defecto
+            }
+
+            if (this.bulletTexturePath == "bullets/missile.png") { //Caso en el que corresponde a un misil
+                scale = 0.6f; //Escala para los misiles
+                speed = 0.40f; //Velocidad para los misiles
+            }
+
+            bullet = new BulletEnemy(this.bulletTexturePath, scale, xStart, yStart - 20, speed, 1); //Se crea la bala
+            bullet.initialPath(xStart, yStart, xEnd, yEnd);
+            this.lastShoot = this.elapsedTime;
+        }
+        this.elapsedTime = this.elapsedTime + Gdx.graphics.getDeltaTime();
+
+        return bullet;
+    }
+
+    public void updateLife(int damage){
+        this.life -= damage;
     }
 
     /**
@@ -109,7 +148,7 @@ public abstract class Enemy {
     public void initialPath() {
         float xStart = Random.getRandomNumber(0 + sprite.getWidth(), MyGdxGame.appWidth - sprite.getWidth()); //Punto inicial x
         float xEnd = Random.getRandomNumber(0 + sprite.getWidth(), MyGdxGame.appWidth - sprite.getWidth()); //Punto final x
-        float yEnd = Random.getRandomNumber(0, MyGdxGame.appHeight);
+        float yEnd = Random.getRandomNumber(0, MyGdxGame.appHeight); //Punto final en y
 
         //Componentes del ControlPoint1
         float controlPoint1X = Random.getRandomNumber(0 + sprite.getWidth(), MyGdxGame.appWidth - sprite.getWidth());
@@ -180,4 +219,5 @@ public abstract class Enemy {
     public void dispose(){
         texture.dispose();
     }
+
 }

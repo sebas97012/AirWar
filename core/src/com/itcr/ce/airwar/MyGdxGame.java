@@ -47,6 +47,4 @@ public class MyGdxGame extends Game {
         batch.dispose();
         font.dispose();
     }
-
-
 }

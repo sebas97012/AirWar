@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector2;
+import com.itcr.ce.airwar.BulletEnemy;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.data.LinkedList;
 import com.itcr.ce.data.Random;
@@ -21,11 +22,12 @@ public class MissileTower extends Enemy {
     /**
      * Constructor
      */
-    public MissileTower() {
-        super("missileTower/missiletower0000.png", 0.15f);
+    public MissileTower(int life) {
+        super("missileTower/missiletower0000.png", 0.15f, life);
         this.speed = 0.02911f;
         this.dataSet = new Vector2[2];
         this.score = 10;
+        this.bulletTexturePath = "bullets/missile.png";
 
         LinkedList<Texture> textures = new LinkedList<Texture>();
         textures.insertAtEnd(new Texture(Gdx.files.internal("missileTower/missiletower0000.png")));

@@ -10,11 +10,9 @@ public class FighterBomber extends Enemy {
     /**
      * Constructor
      */
-    public FighterBomber(){
-        super("airplane/shipred0000.png", 0.45f);
+    public FighterBomber(int life){
+        super("ships/fighterbombership.png", 0.45f, life);
         this.score = 10;
-        this.life = 2; //Muere de dos disparos del jugador
-        this.damage = 3; //Mata al jugador de un disparo;
-        this.speed = 0.15f; //Velocidad media
+        this.speed = 0.09f; //Velocidad media
     }
 }
