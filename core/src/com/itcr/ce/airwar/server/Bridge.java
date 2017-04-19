@@ -22,29 +22,29 @@ public class Bridge {
                 System.out.print(message);
                 try{
                     Robot robot = new Robot();
-                    if(message.equals("UP")){
+                    if(message.equals("u")){
                         robot.keyPress(KeyEvent.VK_UP);
                         robot.delay(100);
                         robot.keyRelease(KeyEvent.VK_UP);
                     }
-                    else if (message.equals("DOWN")){
+                    else if (message.equals("d")){
                         robot.keyPress(KeyEvent.VK_DOWN);
                         robot.delay(100);
                         robot.keyRelease(KeyEvent.VK_DOWN);
                     }
-                    else if(message.equals("LEFT")){
+                    else if(message.equals("l")){
                         robot.keyPress(KeyEvent.VK_LEFT);
                         robot.delay(100);
                         robot.keyRelease(KeyEvent.VK_LEFT);
                     }
-                    else if(message.equals("SPACE")){
+                    else if(message.equals("s")){
                         robot.keyPress(KeyEvent.VK_SPACE);
                         robot.delay(100);
                         robot.keyRelease(KeyEvent.VK_SPACE);
                     }
                     else{
                         robot.keyPress(KeyEvent.VK_RIGHT);
-                        robot.delay(100);
+                        robot.delay(200);
                         robot.keyRelease(KeyEvent.VK_RIGHT);
                     }
                 }catch (AWTException e){

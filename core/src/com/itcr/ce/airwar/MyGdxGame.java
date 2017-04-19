@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.itcr.ce.airwar.screens.MenuScreen;
+import com.itcr.ce.airwar.server.Bridge;
 
 
 /**
@@ -15,6 +16,7 @@ public class MyGdxGame extends Game {
     public static Player player;
     public static int appWidth;
     public static int appHeight;
+    public static Bridge bridge;
 
     /**
      * Constructor
@@ -30,6 +32,7 @@ public class MyGdxGame extends Game {
      * Metodo que crea el SpriteBatch y el BitmapFont
      */
     public void create() {
+        bridge = new Bridge(); //se inicia servidor para la conexcion con el cliente android
         batch = new SpriteBatch(); //Se crea el batch
         font = new BitmapFont();
         this.player = new Player(); //Se crea el jugador
