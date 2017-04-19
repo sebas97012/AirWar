@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.itcr.ce.airwar.entities.*;
 import com.itcr.ce.airwar.Player;
 import com.itcr.ce.airwar.entities.PlayerShip;
+import com.itcr.ce.airwar.powerups.PowerUp;
 import com.itcr.ce.data.*;
 import com.itcr.ce.airwar.*;
 import com.itcr.ce.airwar.Random;
@@ -19,6 +20,7 @@ public class LevelManager {
     private LinkedList<Enemy> enemyCollection = new LinkedList<Enemy>();
     private LinkedList<BulletEnemy> bulletEnemyCollection = new LinkedList<BulletEnemy>();
     private LinkedList<Explosion> explosionCollection = new LinkedList<Explosion>();
+    private LinkedList<PowerUp> powerUpCollection = new LinkedList<PowerUp>();
     private Queue<Enemy> enemyQueue = new Queue<Enemy>();
 
     /**
@@ -50,6 +52,11 @@ public class LevelManager {
         return explosionCollection;
     }
 
+    public LinkedList<PowerUp> getPowerUpCollection() {
+        return powerUpCollection;
+    }
+
+
     public Queue<Enemy> getEnemyQueue() {
         return enemyQueue;
     }
@@ -65,10 +72,10 @@ public class LevelManager {
 
         if (player.getMunition() > 0) { //Si el jugador tiene municion de algun power up
             if (player.getMunitionType() == "laser") { //Power up laser
-                bullet = new BulletPlayer("bullets/defaultBullet.png", "sounds/pew.wav", 1.2f, (int) x, (int) y, 0.75f, 1); //Se la bala tipo laser
+                bullet = new BulletPlayer("bullets/laser2.png", "sounds/space-laser.wav", 0.6f, (int) x, (int) y, 0.75f, 3); //Se la bala tipo laser
             }
-            if (player.getMunitionType() == "misiles") { //Power up misil
-                bullet = new BulletPlayer("bullets/defaultBullet.png", "sounds/pew.wav", 1.2f, (int) x, (int) y, 0.75f, 1); //Se la bala tipo misil
+            if (player.getMunitionType() == "misil") { //Power up misil
+                bullet = new BulletPlayer("bullets/missile.png", "sounds/pew.wav", 0.6f, (int) x, (int) y, 0.75f, 2); //Se la bala tipo misil
             }
             player.setMunition(player.getMunition() - 1); //Se elimina la municion utilizada
         } else {

@@ -157,6 +157,10 @@ public class LinkedList<T> {
         }
     }
 
+    public void cleanList(){
+        this.first = null;
+    }
+
     /**
      * Método para imprimir la lista
      */

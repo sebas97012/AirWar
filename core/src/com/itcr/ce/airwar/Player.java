@@ -2,7 +2,10 @@ package com.itcr.ce.airwar;
 
 import com.itcr.ce.airwar.entities.PlayerShip;
 import com.itcr.ce.airwar.levels.*;
+import com.itcr.ce.airwar.powerups.PowerUp;
 import com.itcr.ce.airwar.screens.GameScreen;
+import com.itcr.ce.data.LinkedList;
+import com.itcr.ce.data.Stack;
 
 /**
  * Created by Arturo on 4/4/2017.
@@ -17,6 +20,8 @@ public class Player {
     private int scoreCounter;
     private MyInputProcessor inputProcessor;
     private boolean invincibility = false;
+    private Stack <PowerUp> powerUpStack = new Stack<PowerUp>();
+    private int shieldLife = 0;
 
     /**
      * Constructor
@@ -49,8 +54,15 @@ public class Player {
      */
     public void updateLifes(){
         if(invincibility != true){ //Si el usuario no tiene invencibilidad
-            this.lifes -= 1; //Se reduce una vida
+            if (shieldLife < 0) { //Si el usuario no tiene escudo
+                this.lifes -= 1; //Se reduce una vida
+                this.powerUpStack.cleanList();
+                this.munition = 0;
+            }else{
+                this.shieldLife -= 1;
+            }
         }
+
     }
 
     /**
@@ -61,6 +73,14 @@ public class Player {
             this.invincibility = true;
         } else {
             this.invincibility = false;
+        }
+    }
+
+    public void usePowerUp() {
+
+        if (powerUpStack.getSize() > 0) {
+            PowerUp powerUp = (PowerUp) powerUpStack.extract().getDataT();
+            powerUp.usePowerUp(this);
         }
     }
 
@@ -114,5 +134,17 @@ public class Player {
 
     public boolean isInvincibility() {
         return invincibility;
+    }
+
+    public Stack<PowerUp> getPowerUpStack() {
+        return powerUpStack;
+    }
+
+    public void setShieldLife(int shieldLife) {
+        this.shieldLife = shieldLife;
+    }
+
+    public int getShieldLife() {
+        return shieldLife;
     }
 }

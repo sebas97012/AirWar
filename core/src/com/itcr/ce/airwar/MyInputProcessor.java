@@ -44,6 +44,12 @@ public class MyInputProcessor implements InputProcessor{
                 player.updateInvincibility();
                 lastInputCheck = elapsedTime;
             }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+                player.usePowerUp();
+
+            }
+
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){

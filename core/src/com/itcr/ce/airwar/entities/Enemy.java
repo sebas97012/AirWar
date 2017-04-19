@@ -11,6 +11,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.itcr.ce.airwar.BulletEnemy;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Random;
+import com.itcr.ce.airwar.powerups.Laser;
+import com.itcr.ce.airwar.powerups.Missile;
+import com.itcr.ce.airwar.powerups.PowerUp;
+import com.itcr.ce.airwar.powerups.Shield;
 
 /**
  * Created by Arturo on 25/3/2017.
@@ -30,11 +34,11 @@ public abstract class Enemy {
     protected boolean dispose = false;
     protected float lastShoot;
     protected float elapsedTime; //Tiempo de disparo transcurrido
+    protected PowerUp powerUp;
 
     //Atributos que tienen que ver con la parte logica
     protected int score;
     protected int life;
-    //protected PowerUp powerUp;
     protected float speed;
 
     /**
@@ -50,6 +54,7 @@ public abstract class Enemy {
         this.sprite.setOrigin(this.sprite.getWidth()/2, this.sprite.getHeight()/2);
         this.bulletTexturePath = "bullets/defaultBullet.png"; //Ruta de la textura de la bala
         this.hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/hit.wav")); //Se crea el sonido de cuando golpean un enemigo
+        this.powerUp = createPowerUp(); //Se crea el powerup
     }
 
     public Sound getHitSound() {
@@ -64,15 +69,31 @@ public abstract class Enemy {
         return life;
     }
 
-    /*
-        public PowerUp getPowerUp() {
-            return powerUp;
-        }
+    public PowerUp getPowerUp() {
+        return powerUp;
+    }
 
-        public void setPowerUp(PowerUp powerUp) {
-            this.powerUp = powerUp;
-        }
-    */
+
+
+
+    public PowerUp createPowerUp() {
+        PowerUp powerUp = null;
+        Integer GoOrNot = Math.round((float) Math.random());
+        if (GoOrNot == 1) {
+            int power = Random.getRandomNumber(0 , 2); //
+            if (power == 0) {
+                powerUp = new Shield();
+            } else {
+                if (power == 1) {
+                    powerUp = new Laser();
+                } else {
+                    powerUp = new Missile();
+                }
+            }
+        }   return powerUp;
+
+    }
+
     public void setDispose(){
         this.dispose = true;
     }

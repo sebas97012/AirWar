@@ -14,6 +14,8 @@ public class PlayerShip {
     private Sprite subjectSprite;
     private float planeScale = 1.2f;
     private Vector2 planeLocation = new Vector2(0, 0);
+    private Texture shieldTexture;
+    private Sprite shieldSprite;
 
     /**
      * Constructor
@@ -22,6 +24,9 @@ public class PlayerShip {
         this.texture = new Texture(Gdx.files.internal("ships/playership.gif"));
         subjectSprite = new Sprite(texture); //Se crea el sprite
         subjectSprite.setSize(planeScale * texture.getWidth(), planeScale * texture.getHeight()); //Se coloca la escala al sprite
+        this.shieldTexture = new Texture(Gdx.files.internal("bullets/shield.png"));
+        this.shieldSprite = new Sprite(shieldTexture);
+        this.shieldSprite.setSize(planeScale * texture.getWidth(), planeScale * texture.getHeight());
     }
 
     /**
@@ -59,6 +64,14 @@ public class PlayerShip {
         }
 
         this.planeLocation.y = newY; //Se aplica el cambio
+    }
+
+    public Texture getShieldTexture() {
+        return shieldTexture;
+    }
+
+    public Sprite getShieldSprite() {
+        return shieldSprite;
     }
 
     public Texture getTexture() {

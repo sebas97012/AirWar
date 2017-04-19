@@ -7,6 +7,7 @@ import com.itcr.ce.airwar.*;
 import com.itcr.ce.airwar.entities.PlayerShip;
 import com.itcr.ce.airwar.levels.LevelManager;
 import com.itcr.ce.airwar.entities.Enemy;
+import com.itcr.ce.airwar.powerups.PowerUp;
 import com.itcr.ce.airwar.server.Bridge;
 
 /**
@@ -86,6 +87,7 @@ public class GameScreen implements Screen {
                     this.updateBulletEnemies();
                     this.updateBulletColisions();
                     this.updateExplosions();
+                    this.updatePowerUps();
                     levelManager.enemiesShoot();
                     Bridge.UpdateServer();
                 }
@@ -128,7 +130,10 @@ public class GameScreen implements Screen {
     private void updatePlayerShip(){
         playerShip.getSubjectSprite().setPosition(playerShip.getPlaneLocation().x, playerShip.getPlaneLocation().y); //Se coloca la nave del jugador
         playerShip.getSubjectSprite().draw(game.batch); //Se dibuja la nave en el batch                              //en la posicion correspondiente
-
+        if (player.getShieldLife() > 0) {   //Si el jugador tiene escudo se dibuja
+            playerShip.getShieldSprite().setPosition(playerShip.getPlaneLocation().x, playerShip.getPlaneLocation().y);
+            playerShip.getShieldSprite().draw(game.batch);
+        }
     }
 
     /**
@@ -241,6 +246,16 @@ public class GameScreen implements Screen {
                     float widthE = enemy.getSprite().getWidth(); //Se obtiene la anchura del enemigp
                     float heightE = enemy.getSprite().getHeight(); //Se obtiene la altura del enemigo
                     levelManager.createExplosion(enemy.getSprite().getX(), enemy.getSprite().getY(), widthE, heightE); //Se crea la explosion
+
+
+                    //Se inserta powerup si existe en la lista de powerups
+                    if (enemy.getPowerUp() != null){
+                        PowerUp powerUp = enemy.getPowerUp();
+                        float XPos = enemy.getSprite().getX(); //Se obtiene la posicion en X
+                        float YPos = enemy.getSprite().getY(); //Se obtiene la posicion en y
+                        powerUp.initialPath(XPos,YPos); //Se establece ruta que va a seguir el powerup
+                        levelManager.getPowerUpCollection().insertAtEnd(powerUp); //Se inserta powerup en la lista
+                    }
                 }
             }
         }
@@ -263,6 +278,26 @@ public class GameScreen implements Screen {
                 levelManager.getExplosionCollection().deleteElement(i); //Si ya termino, se elimina de la lista
             }
         }
+    }
+    /**
+     * Metodo que se encarga de actualizar los powerups
+     */
+    private void updatePowerUps(){
+        for(int x = 0; x < levelManager.getPowerUpCollection().getSize(); x++){
+            PowerUp powerUp = (PowerUp) levelManager.getPowerUpCollection().getElement(x).getDataT();
+            powerUp.render(game.batch); //Se dibuja en el SpriteBatch
+            if (powerUp.checkOverlap(playerShip.getSubjectSprite().getBoundingRectangle())) {
+                player.getPowerUpStack().insert(powerUp);
+                levelManager.getPowerUpCollection().deleteElement(x);
+            }
+            if (powerUp.getSprite().getY() < -powerUp.getSprite().getHeight()){
+                levelManager.getPowerUpCollection().deleteElement(x);
+            }
+        }
+
+
+
+
     }
 
     public boolean isPaused(){
