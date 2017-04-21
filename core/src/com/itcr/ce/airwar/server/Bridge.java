@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 
 
 public class Bridge {
-
+    private int delay_time = 100;
     public static TCPServer Server;
 
     public Bridge() {
@@ -24,27 +24,32 @@ public class Bridge {
                     Robot robot = new Robot();
                     if(message.equals("u")){
                         robot.keyPress(KeyEvent.VK_UP);
-                        robot.delay(100);
+                        robot.delay(delay_time);
                         robot.keyRelease(KeyEvent.VK_UP);
                     }
                     else if (message.equals("d")){
                         robot.keyPress(KeyEvent.VK_DOWN);
-                        robot.delay(100);
+                        robot.delay(delay_time);
                         robot.keyRelease(KeyEvent.VK_DOWN);
                     }
                     else if(message.equals("l")){
                         robot.keyPress(KeyEvent.VK_LEFT);
-                        robot.delay(100);
+                        robot.delay(delay_time);
                         robot.keyRelease(KeyEvent.VK_LEFT);
                     }
                     else if(message.equals("s")){
                         robot.keyPress(KeyEvent.VK_SPACE);
-                        robot.delay(100);
+                        robot.delay(delay_time);
                         robot.keyRelease(KeyEvent.VK_SPACE);
+                    }
+                    else if(message.equals("p")){
+                        robot.keyPress(KeyEvent.VK_ENTER);
+                        robot.delay(delay_time)
+                        robot.KeyRelease(KeyEvent.VK_ENTER)
                     }
                     else{
                         robot.keyPress(KeyEvent.VK_RIGHT);
-                        robot.delay(100);
+                        robot.delay(delay_time);
                         robot.keyRelease(KeyEvent.VK_RIGHT);
                     }
                 }catch (AWTException e){
