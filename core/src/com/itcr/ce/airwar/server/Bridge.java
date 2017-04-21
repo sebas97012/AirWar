@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 
 
 public class Bridge {
-    private int delay_time = 100;
+    private int delay_time = 80;
     public static TCPServer Server;
 
     public Bridge() {
