@@ -44,8 +44,8 @@ public class Bridge {
                     }
                     else if(message.equals("p")){
                         robot.keyPress(KeyEvent.VK_ENTER);
-                        robot.delay(delay_time)
-                        robot.KeyRelease(KeyEvent.VK_ENTER)
+                        robot.delay(delay_time);
+                        robot.keyRelease(KeyEvent.VK_ENTER);
                     }
                     else{
                         robot.keyPress(KeyEvent.VK_RIGHT);
