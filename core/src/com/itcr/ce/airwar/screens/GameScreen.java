@@ -89,7 +89,6 @@ public class GameScreen implements Screen {
                     this.updateExplosions();
                     this.updatePowerUps();
                     levelManager.enemiesShoot();
-                    Bridge.UpdateServer();
                 }
             }
             inputProcessor.checkInput(); //Se asigna el procesador de entradas
@@ -153,6 +152,7 @@ public class GameScreen implements Screen {
                 float height = playerShip.getSubjectSprite().getHeight();
                 levelManager.createExplosion(playerShip.getPlaneLocation().x, playerShip.getPlaneLocation().y, width, height); //Se crea una explosion
                 player.updateLifes(); //Se actualizan las vidas del jugador
+                Bridge.UpdateServer();
                 bullet.dispose(); //Se deja de dibujar la bala
                 levelManager.getBulletEnemyCollection().deleteElement(x); //Se elimina la bala de la lista
             }
@@ -182,6 +182,7 @@ public class GameScreen implements Screen {
                 levelManager.createExplosion(playerShip.getPlaneLocation().x, playerShip.getPlaneLocation().y, widthP, heightP);
 
                 player.updateLifes(); //Se actualizan las vidas del jugador
+                Bridge.UpdateServer();
                 enemy.setDispose(); //Se deja de dibujar al enemigo
                 levelManager.getEnemyCollection().deleteElement(x); //Se elimina el enemigo
             }
@@ -240,6 +241,7 @@ public class GameScreen implements Screen {
 
                 if (enemy.getLife() < 1) {
                     player.updateScore(enemy.getScore()); //Se aumenta el score
+                    Bridge.UpdateServer();
                     levelManager.getEnemyCollection().deleteElement(posEnemy); //Se elimina el enemigo
 
                     //Explosion del enemigo

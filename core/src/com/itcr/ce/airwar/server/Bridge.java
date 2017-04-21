@@ -44,7 +44,7 @@ public class Bridge {
                     }
                     else{
                         robot.keyPress(KeyEvent.VK_RIGHT);
-                        robot.delay(200);
+                        robot.delay(100);
                         robot.keyRelease(KeyEvent.VK_RIGHT);
                     }
                 }catch (AWTException e){
@@ -55,7 +55,6 @@ public class Bridge {
 
     }
     public static void UpdateServer(){
-        Server.sendMessage("L:"+Integer.toString(MyGdxGame.player.getLifes()));
-        Server.sendMessage("S:"+Integer.toString(MyGdxGame.player.getScore()));
+        Server.sendMessage("Score:"+Integer.toString(MyGdxGame.player.getScore())+"\n"+"Lifes:"+Integer.toString(MyGdxGame.player.getLifes()));
     }
 }
