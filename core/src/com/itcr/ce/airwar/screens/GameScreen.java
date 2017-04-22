@@ -1,6 +1,5 @@
 package com.itcr.ce.airwar.screens;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.itcr.ce.airwar.*;
@@ -28,6 +27,7 @@ public class GameScreen implements Screen {
      * @param game Es el objeto al que se le asignan las pantallas
      * @param player Jugador
      */
+
     public GameScreen(MyGdxGame game, Player player) {
         this.game = game;
         this.player = player;
@@ -50,6 +50,7 @@ public class GameScreen implements Screen {
      * Metodo encargado de renderizar todos los objetos
      * @param delta El tiempo entre el fotograma anterior y el actual
      */
+
     @Override
     public void render(float delta) {
         camera.update();
@@ -70,14 +71,12 @@ public class GameScreen implements Screen {
             game.font.draw(game.batch, "Press ESC to Continue", (MyGdxGame.appWidth / 2) - 50, (MyGdxGame.appHeight / 2) - 30);
         } else {
             if (player.getLifes() < 1) { //Caso en el que el jugador ha perdido todas las vidas
-                player.setScore(0); //Se reinicia el score del jugador
                 game.setScreen(new DeathScreen(game, player));
                 this.dispose();
             } else {
                 if (this.levelManager.getEnemyQueue().getSize() == 0 && this.levelManager.getEnemyCollection().getSize() == 0) { //Caso en el que el jugador ha completado el nivel
-                    if(player.getLevel().getNumLevel() != 10) player.setLevel(player.getLevel().getNextLevel());
-                    game.setScreen(new DeathScreen(game, player));
-                    //game.setScreen(new LevelCompleteScreen(game, player));
+
+                    game.setScreen(new LevelCompleteScreen(game, player));
                     this.dispose();
                 } else {
                     //Renderizado de objetos en el mapa
@@ -99,6 +98,7 @@ public class GameScreen implements Screen {
     /**
      * Metodo que se encarga de verificar si hay una colision entre las balas del jugador y las balas del enemigo
      */
+
     private void updateBulletColisions(){
         for(int x = 0; x < levelManager.getBulletEnemyCollection().getSize(); x++){
             BulletEnemy bulletEnemy = (BulletEnemy) levelManager.getBulletEnemyCollection().getElement(x).getDataT();
@@ -126,6 +126,7 @@ public class GameScreen implements Screen {
     /**
      * Metodo que se encarga de renderizar la nave del jugador
      */
+
     private void updatePlayerShip(){
         playerShip.getSubjectSprite().setPosition(playerShip.getPlaneLocation().x, playerShip.getPlaneLocation().y); //Se coloca la nave del jugador
         playerShip.getSubjectSprite().draw(game.batch); //Se dibuja la nave en el batch                              //en la posicion correspondiente
@@ -138,6 +139,7 @@ public class GameScreen implements Screen {
     /**
      * Metodo que se encarga de renderizar las balas de los enemigos
      */
+
     private void updateBulletEnemies(){
         for (int x = 0; x < levelManager.getBulletEnemyCollection().getSize(); x++) { //Se renderizan todas las balas de la lista
             BulletEnemy bullet = (BulletEnemy) levelManager.getBulletEnemyCollection().getElement(x).getDataT();
@@ -166,6 +168,7 @@ public class GameScreen implements Screen {
     /**
      * Metodo que se encarga de renderizar los enemigos
      */
+
     private void updateEnemies(){
         for (int x = 0; x < levelManager.getEnemyCollection().getSize(); x++) {
             Enemy enemy = (Enemy) levelManager.getEnemyCollection().getElement(x).getDataT();
@@ -197,6 +200,7 @@ public class GameScreen implements Screen {
     /**
      * Metodo que se encarga de renderizar las balas del jugador
      */
+
     private void updateBulletPlayer(){
         //Se renderizan las balas
         for (int x = 0; x < levelManager.getBulletPlayerCollection().getSize(); x++) {
@@ -266,6 +270,7 @@ public class GameScreen implements Screen {
     /**
      * Metodo que se encarga de actualizar las explosiones
      */
+
     private void updateExplosions(){
         for(int x = 0; x < levelManager.getExplosionCollection().getSize(); x++){
             Explosion explosion = (Explosion) levelManager.getExplosionCollection().getElement(x).getDataT();
@@ -284,6 +289,7 @@ public class GameScreen implements Screen {
     /**
      * Metodo que se encarga de actualizar los powerups
      */
+
     private void updatePowerUps(){
         for(int x = 0; x < levelManager.getPowerUpCollection().getSize(); x++){
             PowerUp powerUp = (PowerUp) levelManager.getPowerUpCollection().getElement(x).getDataT();

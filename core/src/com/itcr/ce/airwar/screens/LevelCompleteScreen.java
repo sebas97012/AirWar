@@ -7,35 +7,33 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.itcr.ce.airwar.Ground;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Player;
-import com.itcr.ce.airwar.levels.*;
 
 /**
- * Created by Arturo on 5/4/2017.
+ * Created by Adrian on 15/04/2017.
  */
+public class LevelCompleteScreen implements Screen {
 
-public class DeathScreen implements Screen {
     private MyGdxGame game;
     private Player player;
     private OrthographicCamera camera;
     private Stage stage;
     private Table table;
+    private TextButton buttonNext;
     private TextButton buttonAgain;
     private TextButton buttonBack;
     private Label score;
     private Skin skin;
 
-    public DeathScreen(MyGdxGame game, Player player){
+
+
+    public LevelCompleteScreen(MyGdxGame game, Player player){
         this.game = game;
         this.player = player;
         this.camera = new OrthographicCamera();
@@ -48,34 +46,48 @@ public class DeathScreen implements Screen {
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
         this.stage = new Stage();
         this.table = new Table(this.skin);
-        this.buttonAgain = new TextButton("Try Again", this.skin);
-        this.buttonBack = new TextButton("Back Menu", this.skin);
-        this.stage.addActor(table);
-        this.table.setBounds(0, 0, this.stage.getWidth(), this.stage.getHeight());
         Drawable drawable = new SpriteDrawable(new Sprite(new Texture(this.player.getLevel().getBackgroundTexturePath())));
         this.table.setBackground(drawable);
+        this.table.setFillParent(true);
+        this.table.setBounds(0, 0, this.stage.getWidth(), this.stage.getHeight());
+        this.stage.addActor(table);
         Gdx.input.setInputProcessor(this.stage);
 
-        this.score = new Label("Your score: " + player.getScore(), this.skin);
+        this.buttonAgain = new TextButton("Try Again", this.skin);
+        this.buttonNext = new TextButton("Next Level", this.skin);
+        this.buttonBack = new TextButton("Back Menu", this.skin);
+
+        this.score = new Label ("Your score: " + this.player.getScore(), this.skin);
         this.score.setFontScale(2,1);
         this.score.setColor(0,0,128,1);
-        player.setScore(0);
 
-        this.buttonAgain.setWidth(150);
-        this.buttonAgain.setHeight(35);
         this.buttonAgain.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                player.setLifes(5);
-                player.getShip().getPlaneLocation().x = 0;
-                player.getShip().getPlaneLocation().y = 0;
-                game.setScreen(new GameScreen(game, player));
+                    player.setLifes(5);
+                    player.getShip().getPlaneLocation().x = 0;
+                    player.getShip().getPlaneLocation().y = 0;
+                    game.setScreen(new GameScreen(game, player));
+                    dispose();
+            }
+        });
+
+        this.buttonNext.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if(player.getLevel().getNumLevel() != 10) {
+                    player.setLevel(player.getLevel().getNextLevel());
+                    player.setLifes(5);
+                    player.getShip().getPlaneLocation().x = 0;
+                    player.getShip().getPlaneLocation().y = 0;
+                    game.setScreen(new GameScreen(game, player));
+                }else{
+                    game.setScreen(new MenuScreen(game));
+                }
                 dispose();
             }
         });
 
-        this.buttonBack.setWidth(150);
-        this.buttonBack.setHeight(35);
         this.buttonBack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -89,11 +101,12 @@ public class DeathScreen implements Screen {
         this.table.row();
         this.table.add(" ");
         this.table.row();
-        this.table.add(this.buttonBack).width(100).height(35).uniform();
-        this.table.add("        ");
-        this.table.add(this.buttonAgain).width(100).height(35).uniform();
+        this.table.add(this.buttonBack).width(200).height(50).uniform();
+        this.table.add("   ");
+        this.table.add(this.buttonAgain).width(200).height(50).uniform();
+        this.table.add("   ");
+        this.table.add(this.buttonNext).width(200).height(50).uniform();
         table.row();
-
     }
 
     @Override
