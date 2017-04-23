@@ -3,8 +3,6 @@ package com.itcr.ce.airwar;
 import com.itcr.ce.airwar.entities.PlayerShip;
 import com.itcr.ce.airwar.levels.*;
 import com.itcr.ce.airwar.powerups.PowerUp;
-import com.itcr.ce.airwar.screens.GameScreen;
-import com.itcr.ce.data.LinkedList;
 import com.itcr.ce.data.Stack;
 
 /**
@@ -54,12 +52,12 @@ public class Player {
      */
     public void updateLifes(){
         if(invincibility != true){ //Si el usuario no tiene invencibilidad
-            if (shieldLife < 0) { //Si el usuario no tiene escudo
+            if (shieldLife == 0) { //Si el usuario no tiene escudo
                 this.lifes -= 1; //Se reduce una vida
                 this.powerUpStack.cleanList();
                 this.munition = 0;
             }else{
-                this.shieldLife -= 1;
+                if(this.shieldLife > 0) this.shieldLife -= 1;
             }
         }
 
@@ -81,6 +79,7 @@ public class Player {
         if (powerUpStack.getSize() > 0) {
             PowerUp powerUp = (PowerUp) powerUpStack.extract().getDataT();
             powerUp.usePowerUp(this);
+            powerUp.getSoundUsed().play();
         }
     }
 

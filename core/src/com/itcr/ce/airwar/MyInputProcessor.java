@@ -47,7 +47,7 @@ public class MyInputProcessor implements InputProcessor{
 
             if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
                 player.usePowerUp();
-
+                lastInputCheck = elapsedTime;
             }
 
         }

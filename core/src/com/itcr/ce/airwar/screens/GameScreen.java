@@ -1,7 +1,11 @@
 package com.itcr.ce.airwar.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.itcr.ce.airwar.*;
 import com.itcr.ce.airwar.entities.PlayerShip;
 import com.itcr.ce.airwar.levels.LevelManager;
@@ -21,7 +25,8 @@ public class GameScreen implements Screen {
     private MyInputProcessor inputProcessor;
     private Ground ground;
     private boolean paused = false;
-
+    private Music music;
+    private ItemBar itemBar;
     /**
      * Constructor
      * @param game Es el objeto al que se le asignan las pantallas
@@ -38,12 +43,15 @@ public class GameScreen implements Screen {
         this.camera = new OrthographicCamera(MyGdxGame.appWidth, MyGdxGame.appHeight); //Se crea una nueva camara
         this.ground = new Ground(player.getLevel().getBackgroundTexturePath(), MyGdxGame.appWidth, MyGdxGame.appHeight, 90.0f); //Se crea el fondo
         camera.translate(0, 0); //Se coloca la camara en la posicion correcta
+        this.music = player.getLevel().getMusic();
+        this.music.setLooping(true);
+        this.music.play();
+        this.itemBar = new ItemBar();
         levelManager.spawnEnemies(); //Generacion de enemigos
     }
 
     @Override
     public void show() {
-
     }
 
     /**
@@ -60,7 +68,9 @@ public class GameScreen implements Screen {
         game.font.draw(game.batch, "Lifes: " + this.player.getLifes(), 20, MyGdxGame.appHeight - 60);
         game.font.draw(game.batch, "Score: " + player.getScore(), 20, MyGdxGame.appHeight - 90);
         game.font.draw(game.batch, "Remaining enemies: " + levelManager.getEnemyQueue().getSize(), 20, MyGdxGame.appHeight - 120);
-
+        game.font.draw(game.batch, "Shield life: " + player.getShieldLife(), 20, MyGdxGame.appHeight - 150);
+        game.font.draw(game.batch, "Special munition: " + player.getMunition(), 20, MyGdxGame.appHeight - 180);
+        this.itemBar.draw(game.batch); //Se dibuja la barra de items
 
         if(player.isInvincibility() == true){ //Si la invencibilidad esta activada
             game.font.draw(game.batch, "Invincibility ON", MyGdxGame.appWidth - 110, MyGdxGame.appHeight - 30);
@@ -75,7 +85,6 @@ public class GameScreen implements Screen {
                 this.dispose();
             } else {
                 if (this.levelManager.getEnemyQueue().getSize() == 0 && this.levelManager.getEnemyCollection().getSize() == 0) { //Caso en el que el jugador ha completado el nivel
-
                     game.setScreen(new LevelCompleteScreen(game, player));
                     this.dispose();
                 } else {
@@ -87,6 +96,7 @@ public class GameScreen implements Screen {
                     this.updateBulletColisions();
                     this.updateExplosions();
                     this.updatePowerUps();
+                    this.itemBar.update(player.getPowerUpStack(), game.batch);
                     levelManager.enemiesShoot();
                 }
             }
@@ -240,7 +250,7 @@ public class GameScreen implements Screen {
                 levelManager.getBulletPlayerCollection().deleteElement(posBullet); //Se elimina la bala
 
                 if(enemy.getLife() >= 1){ //Si el enemigo sigue vivo se reproduce el sonido de hit
-                    enemy.getHitSound().play(0.10f);
+                    enemy.getHitSound().play(5.00f);
                 }
 
                 if (enemy.getLife() < 1) {
@@ -295,8 +305,11 @@ public class GameScreen implements Screen {
             PowerUp powerUp = (PowerUp) levelManager.getPowerUpCollection().getElement(x).getDataT();
             powerUp.render(game.batch); //Se dibuja en el SpriteBatch
             if (powerUp.checkOverlap(playerShip.getSubjectSprite().getBoundingRectangle())) {
-                player.getPowerUpStack().insert(powerUp);
-                levelManager.getPowerUpCollection().deleteElement(x);
+                if (player.getPowerUpStack().getSize() < 12) { //El maximo de power up es 12
+                    player.getPowerUpStack().insert(powerUp);
+                    powerUp.getSoundCollected().play();
+                    levelManager.getPowerUpCollection().deleteElement(x);
+                }
             }
             if (powerUp.getSprite().getY() < -powerUp.getSprite().getHeight()){
                 levelManager.getPowerUpCollection().deleteElement(x);
@@ -340,5 +353,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        this.music.dispose();
     }
 }

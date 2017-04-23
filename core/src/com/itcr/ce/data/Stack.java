@@ -4,34 +4,14 @@ package com.itcr.ce.data;
  * Created by Arturo on 20/3/2017.
  */
 public class Stack<T> extends LinkedList{
-    private Node top;
-    private int size;
-
     public Stack(){
-        this.top = null;
-        this.size = 0;
-    }
-
-    public Node getTop() {
-        return top;
-    }
-
-    public void setTop(Node top) {
-        this.top = top;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
+        super();
     }
 
     public void insert(T data){ //Insertar un nuevo elemento
         Node newNode = new Node(data);
-        newNode.setNext(this.top);
-        this.top = newNode;
+        newNode.setNext(this.first);
+        this.first = newNode;
         this.size++;
     }
 
@@ -40,9 +20,9 @@ public class Stack<T> extends LinkedList{
      * @return El primer nodo de la pila
      */
     public Node extract(){ //Tomar un elemento de la pila
-        Node nodeTop = this.top;
-        if(this.top != null){
-            this.top = this.top.getNext();
+        Node nodeTop = this.first;
+        if(this.first != null){
+            this.first = this.first.getNext();
         }
         if(0 < this.size){
             this.size--;
@@ -63,7 +43,7 @@ public class Stack<T> extends LinkedList{
     }
 
     public void printStack(){
-        Node current = this.top;
+        Node current = this.first;
         while(current != null){
             System.out.print(current.getDataT() + " ");
             current = current.getNext();

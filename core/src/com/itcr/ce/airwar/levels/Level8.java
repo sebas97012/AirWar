@@ -1,5 +1,7 @@
 package com.itcr.ce.airwar.levels;
 
+import com.badlogic.gdx.Gdx;
+
 /**
  * Created by Arturo on 16/4/2017.
  */
@@ -7,6 +9,7 @@ public class Level8 extends Level {
     public Level8(){
         this.nextLevel = new Level9();
         this.backgroundTexturePath = "ground/backgroundlevel8.png"; //Fondo del nivel
+        this.music =  Gdx.audio.newMusic(Gdx.files.internal("music/level8music.wav"));
         this.numLevel = 8; //Numero de nivel
         this.bossHealt = 40;
         this.fighterBomberHealt = 8;

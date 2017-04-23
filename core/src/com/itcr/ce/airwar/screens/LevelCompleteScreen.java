@@ -64,7 +64,6 @@ public class LevelCompleteScreen implements Screen {
         this.buttonAgain.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                    player.setLifes(5);
                     player.getShip().getPlaneLocation().x = 0;
                     player.getShip().getPlaneLocation().y = 0;
                     game.setScreen(new GameScreen(game, player));
@@ -77,7 +76,6 @@ public class LevelCompleteScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 if(player.getLevel().getNumLevel() != 10) {
                     player.setLevel(player.getLevel().getNextLevel());
-                    player.setLifes(5);
                     player.getShip().getPlaneLocation().x = 0;
                     player.getShip().getPlaneLocation().y = 0;
                     game.setScreen(new GameScreen(game, player));

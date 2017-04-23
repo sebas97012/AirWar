@@ -83,7 +83,7 @@ public class LevelManager {
         }
         bullet.initialPath((int) x, (int) y, MyGdxGame.appHeight); //Se el asigna la trayectoria
 
-        bullet.getSound().play(0.03f);
+        bullet.getSound().play(0.40f);
         bulletPlayerCollection.insertAtEnd(bullet); //Se añade a la lista de balas
     }
 
@@ -105,7 +105,7 @@ public class LevelManager {
 
             if(bullet != null){
                 bulletEnemyCollection.insertAtEnd(bullet); //Se inserta en la lista
-                bullet.getSound().play(); //Se reproduce el sonido de disparo
+                bullet.getSound().play(1000.0f); //Se reproduce el sonido de disparo
             }
         }
     }
@@ -119,7 +119,7 @@ public class LevelManager {
      */
     public void createExplosion(float xPos, float yPos, float width, float height) {
         Explosion explosion = new Explosion(xPos, yPos, width, height); //Se crea la explosion
-        explosion.getSound().play(0.10f); //Se reproduce el sonido
+        explosion.getSound().play(0.50f); //Se reproduce el sonido
         this.explosionCollection.insertAtEnd(explosion); //Se agrega a la lista
     }
 

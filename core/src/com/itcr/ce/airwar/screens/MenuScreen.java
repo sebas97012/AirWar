@@ -2,6 +2,7 @@ package com.itcr.ce.airwar.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,12 +31,15 @@ public class MenuScreen implements Screen{
     private Table table;
     private TextButton buttonStart;
     private TextButton buttonExit;
+    private Music music;
 
     public MenuScreen(MyGdxGame game){
         this.game = game;
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false, MyGdxGame.appWidth, MyGdxGame.appHeight);
         camera.translate(0, 0);
+        this.music = Gdx.audio.newMusic(Gdx.files.internal("music/menuprincipalmusic.mp3"));
+        this.music.play();
     }
 
     @Override
@@ -106,6 +110,6 @@ public class MenuScreen implements Screen{
 
     @Override
     public void dispose() {
-
+        this.music.dispose();
     }
 }
