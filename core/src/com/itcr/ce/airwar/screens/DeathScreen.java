@@ -52,6 +52,11 @@ public class DeathScreen implements Screen {
         this.backGroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/creditosmusic.mp3"));
         this.backGroundMusic.setLooping(true);
         this.backGroundMusic.play();
+
+        player.setLifes(5);
+        player.getShip().getPlaneLocation().x = 0;
+        player.getShip().getPlaneLocation().y = 0;
+        this.player.updateStadistics(); //Se actualizan las estadisticas del jugador
     }
 
     /**
@@ -81,9 +86,6 @@ public class DeathScreen implements Screen {
         this.buttonAgain.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                player.setLifes(5);
-                player.getShip().getPlaneLocation().x = 0;
-                player.getShip().getPlaneLocation().y = 0;
                 game.setScreen(new GameScreen(game, player));
                 dispose();
             }

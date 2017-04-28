@@ -3,6 +3,7 @@ package com.itcr.ce.airwar;
 import com.itcr.ce.airwar.entities.PlayerShip;
 import com.itcr.ce.airwar.levels.*;
 import com.itcr.ce.airwar.powerups.PowerUp;
+import com.itcr.ce.data.LinkedList;
 import com.itcr.ce.data.Stack;
 
 /**
@@ -22,18 +23,25 @@ public class Player {
     private int shieldLife = 0;
     private String name;
     private int maxScore;
-    private int time;
+    private int maxLevel;
+    private int timePlayed;
 
 
     /**
      * Constructor
      */
-    public Player(){
+    public Player(PlayerData playerData){
         this.ship = new PlayerShip();
         this.level = new Level1();
         this.inputProcessor = new MyInputProcessor(this);
-        this.lifes = 5;
-        this.score = 0;
+        this.lifes = playerData.getLifes();
+        this.level = Level.createLevel(playerData.getNumLevel());
+        this.score = playerData.getScore();
+        this.scoreCounter = playerData.getScoreCounter();
+        this.name = playerData.getName();
+        this.maxScore = playerData.getMaxScore();
+        this.maxLevel = playerData.getMaxLevel();
+        this.timePlayed = playerData.getTimePlayed();
     }
 
     /**
@@ -85,6 +93,29 @@ public class Player {
             powerUp.usePowerUp(this);
             powerUp.getSoundUsed().play();
         }
+    }
+
+    public void updateStadistics() {
+        if (this.maxLevel < this.level.getNumLevel()) {
+            this.maxLevel = this.level.getNumLevel();
+        }
+        if (this.score > this.maxScore) {
+            this.maxScore = this.score;
+        }
+
+
+        LinkedList<PlayerData> playerDataList = (LinkedList<PlayerData>) FileXMLManager.getContent("playerdata.xml"); //Se obtiene la lista de estadisticas
+        PlayerData playerData2 = (PlayerData) FileXMLManager.getContent("name.xml");
+        String name = playerData2.getName();
+
+        for (int i = 0; i < playerDataList.getSize(); i++) {
+            PlayerData current = (PlayerData) playerDataList.getElement(i).getDataT(); //Se obtiene el elemento
+            if (current.getName() == name) { //Si el nombre corresponde con el nombre ingresado por el usuario se cargan esas estadisticas
+                current.updatePlayerData(this.lifes, this.level.getNumLevel(), this.score, this.scoreCounter,
+                        this.name, this.maxScore, this.maxLevel, this.timePlayed); //Se actualizan las estadisticas;
+            }
+        }
+        FileXMLManager.writeContent(playerDataList, "playerdata.xml"); //Se vuelve a guardar la lista actualizada
     }
 
     public void setLevel(Level level){
@@ -151,27 +182,19 @@ public class Player {
         return shieldLife;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getName(){
-        return this.name;
+    public String getName() {
+        return name;
     }
 
     public int getMaxScore() {
         return maxScore;
     }
 
-    public void setMaxScore(int maxScore) {
-        this.maxScore = maxScore;
-    }
-
     public int getTime() {
-        return time;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
+        return this.timePlayed;
     }
 }

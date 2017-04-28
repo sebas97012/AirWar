@@ -7,6 +7,8 @@ import com.itcr.ce.airwar.screens.MenuScreen;
 import com.itcr.ce.airwar.screens.NameScreen;
 import com.itcr.ce.airwar.server.Bridge;
 
+import java.io.IOException;
+
 
 /**
  * Created by Arturo on 5/4/2017.
@@ -33,10 +35,10 @@ public class MyGdxGame extends Game {
      * Metodo que crea el SpriteBatch y el BitmapFont
      */
     public void create() {
-        bridge = new Bridge(); //se inicia servidor para la conexcion con el cliente android
+        bridge = new Bridge(); //se inicia servidor para la conexion con el cliente android
         batch = new SpriteBatch(); //Se crea el batch
         font = new BitmapFont();
-        this.player = new Player(); //Se crea el jugador
+
         this.setScreen(new NameScreen(this)); //Se le asigna la pantalla a mostrar
     }
 
