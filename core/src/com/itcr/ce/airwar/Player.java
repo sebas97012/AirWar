@@ -25,7 +25,7 @@ public class Player {
     private int maxScore;
     private int maxLevel;
     private int timePlayed;
-    private CharSequence time;
+
 
     /**
      * Constructor
@@ -194,7 +194,7 @@ public class Player {
         return maxScore;
     }
 
-    public CharSequence getTime() {
-        return time;
+    public int getTime() {
+        return this.timePlayed;
     }
 }

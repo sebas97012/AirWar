@@ -87,6 +87,7 @@ public class CreditsScreen implements Screen {
         this.table.add(creditsText).pad(200,100,0,0);
         this.table.row();
         this.table.add(buttonBack).width(100).height(35).pad(100,650,200,200);
+
     }
 
     /**
