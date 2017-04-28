@@ -63,4 +63,21 @@ public abstract class Level {
     public Music getMusic() {
         return music;
     }
+
+    public static Level createLevel(int numLevel){
+        Level level = null;
+
+        if(numLevel == 1) level = new Level1();
+        else if(numLevel == 2) level = new Level2();
+        else if(numLevel == 3) level = new Level3();
+        else if(numLevel == 4) level = new Level4();
+        else if(numLevel == 5) level = new Level5();
+        else if(numLevel == 6) level = new Level6();
+        else if(numLevel == 7) level = new Level7();
+        else if(numLevel == 8) level = new Level8();
+        else if(numLevel == 9) level = new Level9();
+        else if(numLevel == 10) level = new Level10();
+
+        return level;
+    }
 }

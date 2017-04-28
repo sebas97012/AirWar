@@ -83,6 +83,7 @@ public class LevelCompleteScreen implements Screen {
                     player.getShip().getPlaneLocation().x = 0;
                     player.getShip().getPlaneLocation().y = 0;
                     game.setScreen(new GameScreen(game, player));
+                    player.updateStadistics();
                     dispose();
             }
         });
@@ -95,6 +96,7 @@ public class LevelCompleteScreen implements Screen {
                     player.getShip().getPlaneLocation().x = 0;
                     player.getShip().getPlaneLocation().y = 0;
                     game.setScreen(new GameScreen(game, player));
+                    player.updateStadistics();
                 }else{
                     game.setScreen(new CreditsScreen(game, player));
                 }
@@ -106,6 +108,7 @@ public class LevelCompleteScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.setScreen(new MenuScreen(game,player));
+                player.updateStadistics();
                 dispose();
             }
         });

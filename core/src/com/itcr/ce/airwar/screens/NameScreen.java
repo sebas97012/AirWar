@@ -13,8 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.itcr.ce.airwar.FileXMLManager;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Player;
+import com.itcr.ce.airwar.PlayerData;
+import com.itcr.ce.data.LinkedList;
+
+import java.io.IOException;
 
 /**
  * Created by Adrian on 20/04/2017.
@@ -29,14 +34,51 @@ public class NameScreen implements Screen {
     private TextButton buttonStart;
     private Label nameLabel;
     private TextField nameText;
-    private Player player;
 
     public NameScreen(MyGdxGame game){
         this.game = game;
         this.camera = new OrthographicCamera();
-        this.player = new Player();
         camera.setToOrtho(false, MyGdxGame.appWidth, MyGdxGame.appHeight);
         camera.translate(0, 0);
+    }
+
+    private void loadPlayer(){
+        //Se carga o crea el jugador
+        try {
+            if(FileXMLManager.checkExistence("playerdata.xml") == true){
+                LinkedList<PlayerData> playerDataList = (LinkedList<PlayerData>) FileXMLManager.getContent("playerdata.xml"); //Se obtiene la lista de data
+                Player player = null;
+                PlayerData playerData1 = new PlayerData(nameText.getText());
+                FileXMLManager.writeContent(playerData1, "name.xml");
+                PlayerData playerData2 = (PlayerData) FileXMLManager.getContent("name.xml");
+
+                for(int i = 0; i < playerDataList.getSize(); i++){
+                    PlayerData current = (PlayerData) playerDataList.getElement(i).getDataT(); //Se obtiene el elemento
+                    System.out.println(current.getName() == playerData2.getName());
+                    if(current.getName() == playerData2.getName()){ //Si el nombre corresponde con el nombre ingresado por el usuario se cargan esas estadisticas
+                        player = new Player(current);
+                    }
+                }
+
+                if(player == null){ //Caso en el que el nombre no estaba y se tiene que crear este nuevo jugador
+                    PlayerData playerData = new PlayerData(nameText.getText());
+                    player = new Player(playerData);
+                    playerDataList.insertAtEnd(playerData);
+                    FileXMLManager.writeContent(playerDataList, "playerdata.xml");
+                }
+
+                MyGdxGame.player = player;
+
+            } else{ //Caso en el que el documento no existe
+                LinkedList<PlayerData> playerDataList = new LinkedList<PlayerData>();
+                PlayerData playerData = new PlayerData(nameText.getText());
+                MyGdxGame.player = new Player(playerData);
+                playerDataList.insertAtEnd(playerData); //Se inserta en la lista
+                FileXMLManager.writeContent(playerDataList, "playerdata.xml");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -59,8 +101,8 @@ public class NameScreen implements Screen {
         this.buttonStart.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                player.setName(nameText.getText());
-                game.setScreen(new MenuScreen(game, player));
+                loadPlayer();
+                game.setScreen(new MenuScreen(game, MyGdxGame.player));
                 dispose();
             }
         });
