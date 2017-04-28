@@ -97,16 +97,16 @@ public class BulletEnemy {
         if (this.enemyType == 0 || this.enemyType == 1 || this.enemyType == -1) {
             BulletEVector.y -= 5;
         }
-        if (this.enemyType == 3) {                      //Tower
+        if (this.enemyType == 3){                      //Tower
             if (this.xStart < this.xEnd){
                 BulletEVector.x += 3;
                 BulletEVector.y += (yEnd - yStart) / (xEnd - xStart) * 2;   //Supuestamente una recta, para que siga esa trayectoria
             }
-            if (this.xStart > this.xEnd) {
+            if (this.xStart > this.xEnd){
                 BulletEVector.x -= 3;
                 BulletEVector.y -= (yEnd - yStart) / (xEnd - xStart) * 2;
             }
-        }else if (this.enemyType == 4) {             //MissileTower
+        }else if (this.enemyType == 4){             //MissileTower
             if (BulletEVector.y < PlayerShip.getPlaneLocation().y) {
                 BulletEVector.y += 3;
             }

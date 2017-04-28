@@ -11,6 +11,6 @@ public class Boss extends Enemy {
      * Constructor
      */
     public Boss(int level,int tipo){
-        super("bosses/jefe_" + level + ".png", 1.0f, 50*level, tipo);
+        super("bosses/jefe_" + level + ".png", 1.0f, 25*level, tipo);
     }
 }
