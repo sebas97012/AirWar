@@ -129,7 +129,9 @@ public class GameScreen implements Screen {
 
             if(collision == true){ //Si la bala del enemigo choco contra alguna del jugador
                 levelManager.getBulletEnemyCollection().deleteElement(posEnemyBullet); //Se elimina de la lista
-                levelManager.getBulletPlayerCollection().deleteElement(posPlayerBullet); //Se elimina de la lista
+
+                BulletPlayer bulletPlayer = (BulletPlayer) levelManager.getBulletPlayerCollection().getElement(posPlayerBullet).getDataT();
+                if(bulletPlayer.getDamage() != 3) levelManager.getBulletPlayerCollection().deleteElement(posPlayerBullet); //Se elimina de la lista si no es un laser
             }
         }
     }
@@ -248,7 +250,8 @@ public class GameScreen implements Screen {
             if (impact == true) {
                 BulletPlayer bulletPlayer = (BulletPlayer) levelManager.getBulletPlayerCollection().getElement(posBullet).getDataT();
                 enemy.updateLife(bulletPlayer.getDamage()); //Se reduce la vida del enemigo
-                levelManager.getBulletPlayerCollection().deleteElement(posBullet); //Se elimina la bala
+
+                if(bulletPlayer.getDamage() != 3) levelManager.getBulletPlayerCollection().deleteElement(posBullet); //Se elimina la bala si no es de laser
 
                 if(enemy.getLife() >= 1){ //Si el enemigo sigue vivo se reproduce el sonido de hit
                     enemy.getHitSound().play(5.00f);
@@ -316,10 +319,6 @@ public class GameScreen implements Screen {
                 levelManager.getPowerUpCollection().deleteElement(x);
             }
         }
-
-
-
-
     }
 
     public boolean isPaused(){
