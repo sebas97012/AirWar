@@ -115,7 +115,7 @@ public class BulletEnemy {
             }
             if (xStart < xEnd){
                 BulletEVector.x += 3;
-            }else{
+            }if (xStart > xEnd){
                 BulletEVector.x -= 3;
             }
         }else{                                      //Boss
