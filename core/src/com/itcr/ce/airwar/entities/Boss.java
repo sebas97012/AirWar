@@ -9,11 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 public class Boss extends Enemy {
     /**
      * Constructor
-     * @param texturePath Textura que va a tener el enemigo
-     * @param scale Escala deseada para la textura
      */
-    public Boss(String texturePath, float scale, int life){
-        super(texturePath, scale, life);
-        this.speed = 0.15f; //Velocidad baja
+    public Boss(int level,int tipo){
+        super("bosses/jefe_" + level + ".png", 1.0f, 50*level, tipo);
     }
 }

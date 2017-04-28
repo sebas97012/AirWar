@@ -72,16 +72,15 @@ public class LevelManager {
 
         if (player.getMunition() > 0) { //Si el jugador tiene municion de algun power up
             if (player.getMunitionType() == "laser") { //Power up laser
-                bullet = new BulletPlayer("bullets/laser2.png", "sounds/space-laser.wav", 0.6f, (int) x, (int) y, 0.75f, 3); //Se la bala tipo laser
+                bullet = new BulletPlayer("bullets/laser2.png", "sounds/space-laser.wav", 0.6f, 0.75f, 3); //Se la bala tipo laser
             }
             if (player.getMunitionType() == "misil") { //Power up misil
-                bullet = new BulletPlayer("bullets/missile.png", "sounds/pew.wav", 0.6f, (int) x, (int) y, 0.75f, 2); //Se la bala tipo misil
+                bullet = new BulletPlayer("bullets/missile.png", "sounds/pew.wav", 0.6f, 0.75f, 2); //Se la bala tipo misil
             }
             player.setMunition(player.getMunition() - 1); //Se elimina la municion utilizada
         } else {
-            bullet = new BulletPlayer("bullets/defaultBullet.png", "sounds/pew.wav", 1.2f, (int) x, (int) y, 0.75f, 1); //Se crea la bala por defecto
+            bullet = new BulletPlayer("bullets/defaultBullet.png", "sounds/pew.wav", 1.2f, 0.75f, 1); //Se crea la bala por defecto
         }
-        bullet.initialPath((int) x, (int) y, MyGdxGame.appHeight); //Se el asigna la trayectoria
 
         bullet.getSound().play(0.03f);
         bulletPlayerCollection.insertAtEnd(bullet); //Se añade a la lista de balas
@@ -95,11 +94,11 @@ public class LevelManager {
             Enemy enemy = (Enemy) this.enemyCollection.getElement(i).getDataT();
             BulletEnemy bullet = null;
 
-            if(enemy.getClass() == Tower.class || enemy.getClass() == MissileTower.class){ //Caso en el que el enemigo es una torre o una torre de misiles
+            if (enemy.getClass() == Tower.class || enemy.getClass() == MissileTower.class) { //Caso en el que el enemigo es una torre o una torre de misiles
                 float xEnd = playerShip.getPlaneLocation().x; //Se obtiene la posicion del jugador en x
                 float yEnd = playerShip.getPlaneLocation().y;//Se obtiene la posicion del jugador en y
                 bullet = enemy.shoot(xEnd, yEnd); //Se crea una bala teledirigida
-            } else{ //Caso en que el enemigo no es una torre o una torre de misiles
+            }else{                 //Caso en que el enemigo no es una torre o una torre de misiles
                 bullet = enemy.shoot();
             }
 
@@ -142,44 +141,46 @@ public class LevelManager {
         Integer GoOrNot = Math.round((float) Math.random());
         if (GoOrNot == 1) {
             if(enemyQueue.getSize() > 0) {
-                Enemy enemy = (Enemy) enemyQueue.dequeue().getDataT(); //Se obtiene el enemigo de la cola
-                this.enemyCollection.insertAtEnd(enemy); //Se inserta el enemigo en la lista
+                Enemy enemy = (Enemy) enemyQueue.dequeue().getDataT();  //Se obtiene el enemigo de la cola
+                this.enemyCollection.insertAtEnd(enemy);                //Se inserta el enemigo en la lista
 
-                if(enemy.getClass() == Kamikaze.class) { //Si el enemigo es un kamikaze se le asigna la posicion del jugador
+                if(enemy.getClass() == Kamikaze.class) {                //Si el enemigo es un kamikaze se le asigna la posicion del jugador
                     Kamikaze kamikaze = (Kamikaze) enemy;
-                    kamikaze.setPositionPlayer(this.playerShip.getPlaneLocation().x, this.playerShip.getPlaneLocation().y);
+                    //////////// ^ ¿Quitar?
                 }
-
-                enemy.initialPath(); //Se establece el camino que va a seguir el enemigo
             }
         }
     }
+
     /**
      * Metodo que se encarga de crear una cola de enemigos
      */
     public void createQueueEnemies(){
+        Enemy enemyBoss;
         for(int i = 0; i < this.level.getNumberOfEnemies(); i++){
             Enemy enemy;
 
-            int randomEnemy = Random.getRandomNumber(0, 4);
-            if (randomEnemy == 0) {
-                enemy = new Jet(this.level.getJetHealth());
+            int randomEnemy = Random.getRandomNumber(-1, 4);
+            if (randomEnemy == 0){
+                enemy = new FighterBomber(this.level.getFighterBomberHealt(), randomEnemy);
             } else {
-                if (randomEnemy == 1) {
-                    enemy = new Kamikaze(this.level.getKamikazeHealth());
+                if (randomEnemy == -1 || randomEnemy == 1) {
+                    enemy = new Jet(this.level.getJetHealth(), randomEnemy);
                 } else {
-                    if (randomEnemy == 2) {
-                        enemy = new Tower(this.level.getTowerHealth());
+                    if (randomEnemy == 2){
+                        enemy = new Kamikaze(this.level.getKamikazeHealth(), randomEnemy);
                     } else {
-                        if (randomEnemy == 3) {
-                            enemy = new MissileTower(this.level.getMissileTowerHealth());
+                        if (randomEnemy == 3){
+                            enemy = new Tower(this.level.getTowerHealth(), randomEnemy);
                         } else {
-                            enemy = new FighterBomber(this.level.getFighterBomberHealt());
+                            enemy = new MissileTower(this.level.getMissileTowerHealth(), randomEnemy);
                         }
                     }
                 }
             }
             enemyQueue.enqueue(enemy);
         }
+        enemyBoss = new Boss(this.level.numLevel,5);
+        enemyQueue.enqueue(enemyBoss);
     }
 }

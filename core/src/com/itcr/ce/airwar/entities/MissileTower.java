@@ -22,10 +22,8 @@ public class MissileTower extends Enemy {
     /**
      * Constructor
      */
-    public MissileTower(int life) {
-        super("missileTower/missiletower0000.png", 0.15f, life);
-        this.speed = 0.02911f;
-        this.dataSet = new Vector2[2];
+    public MissileTower(int life, int tipo) {
+        super("missileTower/missiletower0000.png", 0.15f, life, tipo);
         this.score = 10;
         this.bulletTexturePath = "bullets/missile.png";
 
@@ -51,41 +49,13 @@ public class MissileTower extends Enemy {
 
     @Override
     /**
-     * Metodo que se encarga de establecer el camino que va a seguir la torre
-     */
-    public void initialPath(){
-        float xStart = Random.getRandomNumber(0, (MyGdxGame.appWidth - this.sprite.getWidth()));
-
-        Vector2 start = new Vector2(xStart, MyGdxGame.appHeight);
-        Vector2 end = new Vector2(xStart, (-2 * this.texture.getHeight()));
-
-        this.dataSet[0] = start;
-        this.dataSet[1] = end;
-
-        this.path = new CatmullRomSpline<Vector2>(dataSet, true); //Ruta de la torre
-    }
-
-    @Override
-    /**
      * Metodo que se encarga de renderizar el enemigo
      * @param batch batch
      */
     public void render(SpriteBatch batch) {
+        EnemyVector.y -= 2;
 
-        float deltaTime = Gdx.graphics.getDeltaTime();
-
-        elapsedTime += deltaTime;
-        TextureRegion currentFrame = (TextureRegion) animation.getKeyFrame(elapsedTime, true); //Se obtiene el frame correspondiente
-        this.sprite.setTexture(currentFrame.getTexture());                                      //al tiempo transcurrido
-        elapsedTime += deltaTime;
-
-        current += deltaTime * speed;
-        if(current >= 1)
-            current -= 1;
-        path.valueAt(out, current); //Se calculan las componentes x y y del vector segun el deltaTime
-        x = out.x;
-        y = out.y;
-        sprite.setPosition(x, y); //Se coloca en la posicion
+        sprite.setPosition(EnemyVector.x, EnemyVector.y); //Se coloca en la posicion
         sprite.draw(batch); //Se dibuja
     }
 }

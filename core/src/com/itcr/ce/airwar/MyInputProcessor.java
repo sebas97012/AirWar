@@ -33,14 +33,14 @@ public class MyInputProcessor implements InputProcessor{
      * Metodo que escuchas las entradas del teclado
      */
     public void checkInput() {
-        if ((lastInputCheck + 0.15f) < (elapsedTime)) { //Restriccion para la cadencia de disparo
-            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+        if ((lastInputCheck + 0.15f) < (elapsedTime)) {         //Restriccion para la cadencia de disparo
+            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {     //Dispara
                 levelManager.createPlayerBullet();
                 lastInputCheck = elapsedTime;
 
             }
 
-            if(Gdx.input.isKeyPressed(Input.Keys.P)){ //Con P se activa la invencibilidad
+            if(Gdx.input.isKeyPressed(Input.Keys.P)){           //Con P se activa la invencibilidad
                 player.updateInvincibility();
                 lastInputCheck = elapsedTime;
             }
@@ -53,7 +53,7 @@ public class MyInputProcessor implements InputProcessor{
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            playerShip.moveShipX(-1); //Direccion negativa en x
+            playerShip.moveShipX(-1);                   //Direccion negativa en x
         }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
             playerShip.moveShipX(1); //Direccion positiva en x

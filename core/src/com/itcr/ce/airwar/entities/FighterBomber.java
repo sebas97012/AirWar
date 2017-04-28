@@ -10,9 +10,8 @@ public class FighterBomber extends Enemy {
     /**
      * Constructor
      */
-    public FighterBomber(int life){
-        super("ships/fighterbombership.png", 0.45f, life);
+    public FighterBomber(int life, int tipo){
+        super("ships/fighterbombership.png", 0.45f, life, tipo);
         this.score = 10;
-        this.speed = 0.09f; //Velocidad media
     }
 }

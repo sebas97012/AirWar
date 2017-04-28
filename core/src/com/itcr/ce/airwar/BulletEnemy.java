@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.itcr.ce.airwar.entities.PlayerShip;
 
 /**
  * Created by Arturo on 25/3/2017.
@@ -16,15 +17,17 @@ public class BulletEnemy {
     private Texture texture;
     private Sprite sprite;
     private Sound sound;
-    private Vector2 out = new Vector2();
-    private Vector2[] dataSet = new Vector2[3];
-    private CatmullRomSpline<Vector2> path;
-    private float current = 0;
-    private float x;
-    private float y;
+    private Vector2 BulletEVector = new Vector2();
     private boolean dispose = false;
-    private float speed;
     private int damage;
+    private int enemyType;
+
+    private float xStart;
+    private float yStart;
+    private float xEnd;
+    private float yEnd;
+
+    private int BulletDirection = 0;
 
     /**
      * Constructor
@@ -33,19 +36,45 @@ public class BulletEnemy {
      * @param xPosition Posicion inicial en x
      * @param yPosition Posicion inicial en y
      */
-    public BulletEnemy(String texturePath, float scale, float xPosition, float yPosition, float speed, int damage){
+    public BulletEnemy(String texturePath, float scale, float xPosition, float yPosition, float speed, int damage, int enemyType){
         this.texture = new Texture(Gdx.files.internal(texturePath)); //Se carga la textura
         this.sprite = new Sprite(this.texture); //Se crea el sprite
         this.sprite.rotate(180);
         this.sprite.setSize(scale * this.texture.getWidth(), scale * this.texture.getHeight()); //Se le coloca la escala
         this.sprite.setPosition(xPosition, yPosition); //Se coloca el sprite en la posicion inicial correspondiente
         this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/enemyShoot.wav"));
-        this.speed = speed;
         this.damage = damage;
+        this.enemyType = enemyType;
+
+        BulletEVector.x = (float) xPosition;
+        BulletEVector.y = (float) yPosition;
+
+        this.xStart = xPosition;                            //Posición inicial de la bala
+        this.yStart = yPosition;
+        this.xEnd = PlayerShip.getPlaneLocation().x;        //Hacia donde se dirije la bala
+        this.yEnd = PlayerShip.getPlaneLocation().y;
+    }
+
+    //Balas de jefe
+    public BulletEnemy(String texturePath, float scale, float xPosition, float yPosition, float bossWidth, float speed, int damage, int enemyType){
+        this.texture = new Texture(Gdx.files.internal(texturePath)); //Se carga la textura
+        this.sprite = new Sprite(this.texture); //Se crea el sprite
+        this.sprite.rotate(180);
+        this.sprite.setSize(scale * this.texture.getWidth(), scale * this.texture.getHeight()); //Se le coloca la escala
+        this.sprite.setPosition(xPosition, yPosition); //Se coloca el sprite en la posicion inicial correspondiente
+        this.sound = Gdx.audio.newSound(Gdx.files.internal("sounds/enemyShoot.wav"));
+        this.damage = damage;
+        this.enemyType = enemyType;
+
+        int randomPosBullet = Random.getRandomNumber((int) xPosition, (int) xPosition + (int) bossWidth);
+        BulletEVector.x = randomPosBullet;
+        BulletEVector.y = yPosition;
+
+        BulletDirection = Random.getRandomNumber(-1, 1);
     }
 
     public float getY(){
-        return this.y;
+        return this.BulletEVector.y;
     }
 
     public Sprite getSprite(){
@@ -61,38 +90,40 @@ public class BulletEnemy {
     }
 
     /**
-     * Calcula el camino que va a seguir la bala
-     * @param xStart Posicion inicial en el eje x
-     * @param yStart Posicion inicial en el eje y
-     */
-    public void initialPath(float xStart, float yStart, float cpx, float cpy) {
-        Vector2 start = new Vector2(xStart, yStart); //Posicion inicial
-        Vector2 controlPoint = new Vector2(cpx, cpy);
-        Vector2 end = new Vector2(cpx, (-2 * this.sprite.getHeight()));
-
-        dataSet[0] = start;
-        dataSet[1] = controlPoint;
-        dataSet[2] = end;
-
-        path = new CatmullRomSpline<Vector2>(dataSet, true); //Trayecto que va a seguir la bala
-    }
-
-    /**
      * Metodo que se encarga de renderizar la bala
      * @param batch batch en el que dibujar
      */
-    public void render(SpriteBatch batch) {
-        current += Gdx.graphics.getDeltaTime() * speed;
-        if(current >= 1)
-            current -= 1;
-
-        path.valueAt(out, current); //Se calcula el vector segun el deltaTime
-        sprite.setRotation((float)this.calcRotationAngle(x, y, out.x, out.y)-180);
-        x = out.x; //Componente x del vector
-        y = out.y; //Componente y del vector
-
-        sprite.setPosition(x, y); //Se le coloca en la posicion "x" y "y" correspondiente
-        sprite.draw(batch);  //Se dibuja en el batch
+    public void render(SpriteBatch batch){
+        if (this.enemyType == 0 || this.enemyType == 1 || this.enemyType == -1) {
+            BulletEVector.y -= 5;
+        }
+        if (this.enemyType == 3) {                      //Tower
+            if (this.xStart < this.xEnd){
+                BulletEVector.x += 3;
+                BulletEVector.y += (yEnd - yStart) / (xEnd - xStart) * 2;   //Supuestamente una recta, para que siga esa trayectoria
+            }
+            if (this.xStart > this.xEnd) {
+                BulletEVector.x -= 3;
+                BulletEVector.y -= (yEnd - yStart) / (xEnd - xStart) * 2;
+            }
+        }else if (this.enemyType == 4) {             //MissileTower
+            if (BulletEVector.y < PlayerShip.getPlaneLocation().y) {
+                BulletEVector.y += 3;
+            }
+            if (BulletEVector.y > PlayerShip.getPlaneLocation().y) {
+                BulletEVector.y -= 3;
+            }
+            if (xStart < xEnd){
+                BulletEVector.x += 3;
+            }else{
+                BulletEVector.x -= 3;
+            }
+        }else{                                      //Boss
+            BulletEVector.x += 3 * BulletDirection;     //Dirección aleatoria
+            BulletEVector.y -= 2;
+        }
+    sprite.setPosition(BulletEVector.x, BulletEVector.y); //Se le coloca en la posicion "x" y "y" correspondiente
+    sprite.draw(batch);  //Se dibuja en el batch
     }
 
     /**
@@ -118,7 +149,7 @@ public class BulletEnemy {
      * @return True si los dos objetos han chocado
      */
     public boolean checkOverlap(Rectangle rectangle){
-        return !(x > rectangle.x + rectangle.width || x + sprite.getWidth() < rectangle.x || y > rectangle.y + rectangle.height || y + sprite.getHeight() < rectangle.y);
+        return !(BulletEVector.x > rectangle.x + rectangle.width || BulletEVector.x + sprite.getWidth() < rectangle.x || BulletEVector.y > rectangle.y + rectangle.height || BulletEVector.y + sprite.getHeight() < rectangle.y);
     }
 
     public void dispose(){

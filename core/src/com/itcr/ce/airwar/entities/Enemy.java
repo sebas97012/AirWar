@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.itcr.ce.airwar.BulletEnemy;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Random;
+import com.itcr.ce.airwar.levels.LevelManager;
 import com.itcr.ce.airwar.powerups.Laser;
 import com.itcr.ce.airwar.powerups.Missile;
 import com.itcr.ce.airwar.powerups.PowerUp;
@@ -25,12 +26,8 @@ public abstract class Enemy {
     protected String bulletTexturePath;
     protected Texture texture;
     protected Sprite sprite;
-    protected Vector2 out = new Vector2();
-    protected Vector2[] dataSet = new Vector2[4];
-    protected CatmullRomSpline<Vector2> path;
-    protected float current = 0;
-    protected float x;
-    protected float y;
+    protected Vector2 EnemyVector = new Vector2();
+
     protected boolean dispose = false;
     protected float lastShoot;
     protected float elapsedTime; //Tiempo de disparo transcurrido
@@ -39,14 +36,15 @@ public abstract class Enemy {
     //Atributos que tienen que ver con la parte logica
     protected int score;
     protected int life;
-    protected float speed;
+
+    protected int tipo = -1;
 
     /**
      * Constructor
      * @param texturePath Ruta de la textura del enemigo
      * @param scale Escala
      */
-    public Enemy(String texturePath, float scale, int life){
+    public Enemy(String texturePath, float scale, int life, int tipo){
         this.life = life;
         this.texture = new Texture(Gdx.files.internal(texturePath));
         this.sprite = new Sprite(this.texture);
@@ -55,6 +53,15 @@ public abstract class Enemy {
         this.bulletTexturePath = "bullets/defaultBullet.png"; //Ruta de la textura de la bala
         this.hitSound = Gdx.audio.newSound(Gdx.files.internal("sounds/hit.wav")); //Se crea el sonido de cuando golpean un enemigo
         this.powerUp = createPowerUp(); //Se crea el powerup
+
+        EnemyVector.x = Random.getRandomNumber(0,MyGdxGame.appWidth - (int ) sprite.getWidth());    //Aparece en una posición en x aleatoria
+        EnemyVector.y = MyGdxGame.appHeight;                                //Aparece arriba de la pantalla
+
+        this.tipo = tipo;
+
+        if (this.tipo == 5){        //Jefe
+            EnemyVector.x = MyGdxGame.appWidth/2 - sprite.getWidth();
+        }
     }
 
     public Sound getHitSound() {
@@ -72,9 +79,6 @@ public abstract class Enemy {
     public PowerUp getPowerUp() {
         return powerUp;
     }
-
-
-
 
     public PowerUp createPowerUp() {
         PowerUp powerUp = null;
@@ -102,8 +106,8 @@ public abstract class Enemy {
         return this.sprite;
     }
 
-    public Vector2 getOut(){
-        return this.out;
+    public Vector2 getEnemyVector(){
+        return this.EnemyVector;
     }
 
     /**
@@ -111,13 +115,21 @@ public abstract class Enemy {
      * @return La bala enemiga
      */
     public BulletEnemy shoot(){
-        float xStart = this.sprite.getX() + (this.sprite.getWidth() / 2); //Se obtiene la posicion en x inicial de la bala
-        float yStart = this.sprite.getY(); //Se obtiene la posicion inicial en y de la bala
-        BulletEnemy bullet = null;
+        float xStart;
+        if (this.tipo != 5) {
+            xStart = this.sprite.getX() + (this.sprite.getWidth() / 2); //Se obtiene la posicion en x inicial de la bala
+        }else{      //Si jefe
+            xStart = EnemyVector.x;       //Si es un jefe, las balas pueden aparecer en cualquier parte abajo de éste
+        }
+        float yStart = this.sprite.getY();  //Se obtiene la posicion inicial en y de la bala
 
-        if ((this.lastShoot + 0.60f) < this.elapsedTime) {
-            bullet = new BulletEnemy(this.bulletTexturePath, 1.2f, xStart, yStart - 20, 0.50f, 1); //Se crea la bala
-            bullet.initialPath(xStart, yStart, xStart, (-2 * this.sprite.getHeight())); //Se establece el camino que va a seguir
+        BulletEnemy bullet = null;
+        if ((this.lastShoot + 0.60f) < this.elapsedTime){
+            if (this.tipo == 5){        //Balas jefes
+                bullet = new BulletEnemy(this.bulletTexturePath, 1, xStart, yStart, sprite.getWidth() - 20, 1, 1, this.tipo);
+            }else{
+                bullet = new BulletEnemy(this.bulletTexturePath, 1.2f, xStart, yStart - 20, 0.50f, 1, this.tipo); //Se crea la bala
+            }
             this.lastShoot = this.elapsedTime;
         }
         this.elapsedTime = this.elapsedTime + Gdx.graphics.getDeltaTime();
@@ -128,30 +140,28 @@ public abstract class Enemy {
     /**
      * Metodo que crea una bala teledirigida
      * @param xEnd Posicion en x a donde dirigirse
+     * @param xEnd Posicion en x a donde dirigirse
      * @param yEnd Posicion en y a donde dirigirse
      * @return La bala enemiga
      */
     public BulletEnemy shoot(float xEnd, float yEnd){
         float xStart = this.sprite.getX() + (this.sprite.getWidth() / 2); //Se obtiene la posicion en x inicial de la bala
-        float yStart = this.sprite.getY(); //Se obtiene la posicion inicial en y de la bala
+        float yStart = this.sprite.getY();      //Se obtiene la posicion inicial en y de la bala
         BulletEnemy bullet = null;
 
         if ((this.lastShoot + 3.0f) < this.elapsedTime) {
             float scale = 0;
             float speed = 0;
 
-            if(this.bulletTexturePath == "bullets/defaultBullet.png") { //En caso de usar la textura por defecto
-                scale = 1.2f; //Escala de la bala por defecto
-                speed = 0.50f; //Velocidad de la bala por defecto
+            if (this.bulletTexturePath == "bullets/defaultBullet.png") {    //En caso de usar la textura por defecto
+                scale = 1.2f;       //Escala de la bala por defecto
             }
 
-            if (this.bulletTexturePath == "bullets/missile.png") { //Caso en el que corresponde a un misil
-                scale = 0.6f; //Escala para los misiles
-                speed = 0.40f; //Velocidad para los misiles
+            if (this.bulletTexturePath == "bullets/missile.png") {          //Caso en el que corresponde a un misil
+                scale = 0.6f;       //Escala para los misiles
+            }else {
+                bullet = new BulletEnemy(this.bulletTexturePath, scale, xStart, yStart - 20, speed, 1, this.tipo); //Se crea la bala
             }
-
-            bullet = new BulletEnemy(this.bulletTexturePath, scale, xStart, yStart - 20, speed, 1); //Se crea la bala
-            bullet.initialPath(xStart, yStart, xEnd, yEnd);
             this.lastShoot = this.elapsedTime;
         }
         this.elapsedTime = this.elapsedTime + Gdx.graphics.getDeltaTime();
@@ -164,69 +174,47 @@ public abstract class Enemy {
     }
 
     /**
-     * Metodo que se encarga de crear una ruta para el enemigo
-     */
-    public void initialPath() {
-        float xStart = Random.getRandomNumber(0 + sprite.getWidth(), MyGdxGame.appWidth - sprite.getWidth()); //Punto inicial x
-        float xEnd = Random.getRandomNumber(0 + sprite.getWidth(), MyGdxGame.appWidth - sprite.getWidth()); //Punto final x
-        float yEnd = Random.getRandomNumber(0, MyGdxGame.appHeight); //Punto final en y
-
-        //Componentes del ControlPoint1
-        float controlPoint1X = Random.getRandomNumber(0 + sprite.getWidth(), MyGdxGame.appWidth - sprite.getWidth());
-        float controlPoint1Y = Random.getRandomNumber(0 + sprite.getHeight(), MyGdxGame.appHeight - sprite.getHeight());
-
-        //Componentes del ControlPoint2
-        float controlPoint2X = Random.getRandomNumber(0 + sprite.getWidth(), MyGdxGame.appWidth - sprite.getWidth());
-        float controlPoint2Y = Random.getRandomNumber(0, MyGdxGame.appHeight - sprite.getHeight());//controlPoint1Y);
-
-        //Se crean los vectores
-        Vector2 start = new Vector2(xStart, MyGdxGame.appHeight);
-        Vector2 end = new Vector2(xEnd, yEnd);
-        Vector2 controlPoint1 = new Vector2(controlPoint1X, controlPoint1Y);
-        Vector2 controlPoint2 = new Vector2(controlPoint2X, controlPoint2Y);
-
-        dataSet[0] = start;
-        dataSet[1] = controlPoint2;
-        dataSet[2] = controlPoint1;
-        dataSet[3] = end;
-
-        //Ruta del enemigo
-        path = new CatmullRomSpline<Vector2>(dataSet, true);
-    }
-
-    /**
      * Metodo que se encarga de renderizar el enemigo
      * @param batch batch
      */
-    public void render(SpriteBatch batch)
-    {
-        current += Gdx.graphics.getDeltaTime() * speed;
-        if(current >= 1)
-            current -= 1;
-        path.valueAt(out, current); //Se calculan las componentes x y y del vector segun el deltaTime
-        sprite.setRotation((float)calcRotationAngle(x, y, out.x, out.y)-180); //Se obtiene el angulo de rotacion correspondiente
-        x = out.x;
-        y = out.y;
-        sprite.setPosition(x, y); //Se coloca en la posicion
-        sprite.draw(batch); //Se dibuja
-    }
+    public void render(SpriteBatch batch){
+        if (this.tipo == 0) {                               //FighterBomber
+            EnemyVector.y -= 1;
+        }
+        if (this.tipo == -1 || this.tipo == 1) {           //Jet
+            if (EnemyVector.x <= 0 || EnemyVector.x >= MyGdxGame.appWidth - sprite.getWidth()) {    //Si llega a un borde lateral
+                this.tipo *= -1;             //Cambia la dirección de x
+            }
 
-    /**
-     * Metodo que calcula en angulo de rotacion
-     * @return El angulo de rotacion
-     */
-    public double calcRotationAngle(float cX, float cY, float tX, float tY){
-        double theta = Math.atan2(tY - cY, tX - cX); //Calcula el angulo theta (en radianes)
-        // de los valores de delta y y delta x
-        theta += Math.PI/2.0; //Gira el angulo theta 90 grados en direccion horaria
+            EnemyVector.x -= this.tipo * 6;
+            EnemyVector.y -= Math.abs(this.tipo) * 4;
+        }
+        if (this.tipo == 2){            //Kamikaze
+            if (EnemyVector.x < (int) PlayerShip.getPlaneLocation().x){
+                EnemyVector.x += 5;
+            }
+            if (EnemyVector.x > (int) PlayerShip.getPlaneLocation().x){
+                EnemyVector.x -= 5;
+            }                   //Si ya está en x igual que el jugador, no cambia
+            EnemyVector.y -= 4;
 
-        double angle = Math.toDegrees(theta); //Convierte a grados
-        if(angle < 0){ //Si es angulo es negativo lo pasamos a positivo
-            angle += 360;
+        }if (this.tipo == 5){           //Jefe
+            //EnemyVector.x += this.tipo*2;
+            if (EnemyVector.y > MyGdxGame.appHeight-sprite.getHeight()){
+                EnemyVector.y -= 2;
+            }
+            //}if (EnemyVector.x <= 0 || EnemyVector.x >= MyGdxGame.appWidth-sprite.getWidth()){
+            //    this.tipo *= -1;
+            //}
+
         }
 
-        return angle;
+        //sprite.setRotationAngle((float) calcRotationAngle(x,y,BulletEVector.x,BulletEVector.y)-180)
+
+        sprite.setPosition(EnemyVector.x, EnemyVector.y);   //Se coloca en la posición
+        sprite.draw(batch);                                 //Se dibuja
     }
+
 
     /**
      * Metodo que verifica si el enemigo a chocado contra algun objeto
@@ -234,7 +222,7 @@ public abstract class Enemy {
      * @return
      */
     public boolean checkOverlap(Rectangle rectangle){
-        return !(x > rectangle.x + rectangle.width || x + sprite.getWidth() < rectangle.x || y > rectangle.y + rectangle.height || y + sprite.getHeight() < rectangle.y);
+        return !(EnemyVector.x > rectangle.x + rectangle.width || EnemyVector.x + sprite.getWidth() < rectangle.x || EnemyVector.y > rectangle.y + rectangle.height || EnemyVector.y + sprite.getHeight() < rectangle.y);
     }
 
     public void dispose(){

@@ -10,10 +10,10 @@ import com.itcr.ce.airwar.MyGdxGame;
  * Created by Arturo on 4/4/2017.
  */
 public class PlayerShip {
-    private Texture texture;
-    private Sprite subjectSprite;
+    private static Texture texture;
+    private static Sprite subjectSprite;
     private float planeScale = 1.2f;
-    private Vector2 planeLocation = new Vector2(0, 0);
+    private static Vector2 planeLocation = new Vector2(0, 0);
     private Texture shieldTexture;
     private Sprite shieldSprite;
 
@@ -27,6 +27,7 @@ public class PlayerShip {
         this.shieldTexture = new Texture(Gdx.files.internal("bullets/shield.png"));
         this.shieldSprite = new Sprite(shieldTexture);
         this.shieldSprite.setSize(planeScale * texture.getWidth(), planeScale * texture.getHeight());
+        planeLocation.x = MyGdxGame.appWidth / 2 - texture.getWidth() / 2;
     }
 
     /**
@@ -78,11 +79,11 @@ public class PlayerShip {
         return texture;
     }
 
-    public Sprite getSubjectSprite() {
+    public static Sprite getSubjectSprite() {
         return subjectSprite;
     }
 
-    public Vector2 getPlaneLocation() {
+    public static Vector2 getPlaneLocation() {
         return planeLocation;
     }
 }
