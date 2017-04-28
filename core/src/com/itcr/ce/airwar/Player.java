@@ -20,6 +20,10 @@ public class Player {
     private boolean invincibility = false;
     private Stack <PowerUp> powerUpStack = new Stack<PowerUp>();
     private int shieldLife = 0;
+    private String name;
+    private int maxScore;
+    private int time;
+
 
     /**
      * Constructor
@@ -145,5 +149,29 @@ public class Player {
 
     public int getShieldLife() {
         return shieldLife;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public int getMaxScore() {
+        return maxScore;
+    }
+
+    public void setMaxScore(int maxScore) {
+        this.maxScore = maxScore;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
     }
 }

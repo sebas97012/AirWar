@@ -1,5 +1,6 @@
 package com.itcr.ce.airwar.screens;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -16,51 +17,30 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Player;
 
-import java.net.InetAddress;
-import static com.badlogic.gdx.Gdx.app;
-
-
 /**
- * Created by Adrian on 10/4/2017.
+ * Created by Adrian on 20/04/2017.
  */
+public class NameScreen implements Screen {
 
-public class MenuScreen implements Screen{
     final MyGdxGame game;
-    private Player player;
     private OrthographicCamera camera;
     private Skin skin;
     private Stage stage;
     private Table table;
     private TextButton buttonStart;
-    private TextButton buttonCredits;
-    private TextButton buttonExit;
-    private Label ip;
-    private String ipText;
-    private Music backGroundMusic;
+    private Label nameLabel;
+    private TextField nameText;
+    private Player player;
 
-    /**
-     * Constructor
-     * @param game Es el objeto al que se le asignan las pantallas
-     * @param player Jugador
-     */
-
-    public MenuScreen(MyGdxGame game, Player player){
+    public NameScreen(MyGdxGame game){
         this.game = game;
-        this.player = player;
         this.camera = new OrthographicCamera();
+        this.player = new Player();
         camera.setToOrtho(false, MyGdxGame.appWidth, MyGdxGame.appHeight);
         camera.translate(0, 0);
-        ipConfig();
-        this.backGroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/background.wav"));
-        this.backGroundMusic.setLooping(true);
-        this.backGroundMusic.play();
-
-
     }
 
-    /**
-     * Metodo encargado de crear todos los objetos que se van a renderizar
-     */
+
 
     @Override
     public void show() {
@@ -69,54 +49,29 @@ public class MenuScreen implements Screen{
         this.table = new Table(this.skin);
         Drawable drawable = new SpriteDrawable(new Sprite(new Texture("ground/menuBG.jpg")));
         this.table.setBackground(drawable);
-        this.buttonStart = new TextButton("Start Game", this.skin);
-        this.buttonExit = new TextButton("Exit", this.skin);
-        this.buttonCredits = new TextButton("Credits", this.skin);
+        this.buttonStart = new TextButton("Enter", this.skin);
         this.table.setFillParent(true);
         this.table.setBounds(0, 0, this.stage.getWidth(), this.stage.getHeight());
         this.stage.addActor(table);
         Gdx.input.setInputProcessor(this.stage);
-        this.ip = new Label("IP: " + ipText, this.skin);
+        this.nameLabel = new Label("Name: ", this.skin);
+        this.nameText = new TextField("",this.skin);
+
         this.buttonStart.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new IntroScreen(game, player));
-                backGroundMusic.dispose();
+                player.setName(nameText.getText());
+                game.setScreen(new MenuScreen(game, player));
                 dispose();
             }
         });
 
-        this.buttonCredits.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new CreditsScreen(game, player));
-                backGroundMusic.dispose();
-                dispose();
-            }
-        });
-
-
-        this.buttonExit.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                app.exit();
-                dispose();
-            }
-        });
-
-        this.table.add(this.ip).pad(0,0,0,435);
+        this.table.add(this.nameLabel).pad(100,100,0,0);
+        this.table.add(this.nameText).pad(100,0,0,800);
         this.table.row();
-        this.table.add(this.buttonExit).width(200).height(50).pad(450,100,200,0);
-        this.table.add(this.buttonCredits).width(200).height(50).pad(450,0,200,80);
-        this.table.add(this.buttonStart).width(200).height(50).pad(450,80,200,150);
-
-
+        this.table.add(this.buttonStart).width(100).height(35).pad(0,100,0,0);
     }
 
-    /**
-     * Metodo encargado de renderizar todos los objetos
-     * @param delta El tiempo entre el fotograma anterior y el actual
-     */
     @Override
     public void render(float delta) {
         Gdx.gl.glViewport(0, 0, MyGdxGame.appWidth, MyGdxGame.appHeight);
@@ -153,18 +108,5 @@ public class MenuScreen implements Screen{
     @Override
     public void dispose() {
 
-    }
-
-    private void ipConfig (){
-        try
-        {
-            String thisIp = InetAddress.getLocalHost().getHostAddress();
-            this.ipText = thisIp;
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            this.ipText = "---";
-        }
     }
 }

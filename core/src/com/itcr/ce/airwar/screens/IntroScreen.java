@@ -16,25 +16,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.itcr.ce.airwar.Ground;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Player;
-import com.itcr.ce.airwar.levels.*;
 
 /**
- * Created by Arturo on 5/4/2017.
+ * Created by Adrian on 20/04/2017.
  */
 
-public class DeathScreen implements Screen {
-    private MyGdxGame game;
+public class IntroScreen implements Screen {
+
+    final MyGdxGame game;
     private Player player;
     private OrthographicCamera camera;
+    private Skin skin;
     private Stage stage;
     private Table table;
-    private TextButton buttonAgain;
-    private TextButton buttonBack;
-    private Label score;
-    private Skin skin;
+    private TextButton buttonSkip;
+    private Label introText;
     private Music backGroundMusic;
 
     /**
@@ -43,13 +41,13 @@ public class DeathScreen implements Screen {
      * @param player Jugador
      */
 
-    public DeathScreen(MyGdxGame game, Player player){
+    public IntroScreen(MyGdxGame game, Player player){
         this.game = game;
         this.player = player;
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false, MyGdxGame.appWidth, MyGdxGame.appHeight);
         camera.translate(0, 0);
-        this.backGroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/creditosmusic.mp3"));
+        this.backGroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/menuprincipalmusic.mp3"));
         this.backGroundMusic.setLooping(true);
         this.backGroundMusic.play();
     }
@@ -63,52 +61,34 @@ public class DeathScreen implements Screen {
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
         this.stage = new Stage();
         this.table = new Table(this.skin);
-        this.buttonAgain = new TextButton("Try Again", this.skin);
-        this.buttonBack = new TextButton("Back Menu", this.skin);
-        this.stage.addActor(table);
-        this.table.setBounds(0, 0, this.stage.getWidth(), this.stage.getHeight());
-        Drawable drawable = new SpriteDrawable(new Sprite(new Texture("ground/gameOverBG.jpg")));
+        Drawable drawable = new SpriteDrawable(new Sprite(new Texture("ground/backgroundlevel1.jpg")));
         this.table.setBackground(drawable);
+        this.buttonSkip = new TextButton("Skip", this.skin);
+        this.introText = new Label ("En el 2045 nos atacaron los aliens, \n" +
+                "una raza superior con tecnologia avanzada \n" +
+                "que amenazaba con destruir nuestro planeta, \n" +
+                "solo estaba en las manos de un heroe \n" +
+                "con la capacidad de derrotar a los jefes \n" +
+                "que comandan las fuerzas enemigas.", this.skin);
+
+        this.introText.setFontScale(2,2);
+        this.table.setFillParent(true);
+        this.table.setBounds(0, 0, this.stage.getWidth(), this.stage.getHeight());
+        this.stage.addActor(table);
         Gdx.input.setInputProcessor(this.stage);
 
-        this.score = new Label("Your score: " + player.getScore(), this.skin);
-        this.score.setFontScale(2,1);
-        this.score.setColor(255,0,0,1);
-        player.setScore(0);
 
-        this.buttonAgain.setWidth(150);
-        this.buttonAgain.setHeight(35);
-        this.buttonAgain.addListener(new ChangeListener() {
+        this.buttonSkip.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                player.setLifes(5);
-                player.getShip().getPlaneLocation().x = 0;
-                player.getShip().getPlaneLocation().y = 0;
                 game.setScreen(new GameScreen(game, player));
                 dispose();
             }
         });
 
-        this.buttonBack.setWidth(150);
-        this.buttonBack.setHeight(35);
-        this.buttonBack.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new MenuScreen(game,player));
-                dispose();
-            }
-        });
-
-        table.row();
-        this.table.add(this.score).colspan(5);
+        this.table.add(introText).pad(200,100,0,0);
         this.table.row();
-        this.table.add(" ");
-        this.table.row();
-        this.table.add(this.buttonBack).width(200).height(50).uniform();
-        this.table.add("        ");
-        this.table.add(this.buttonAgain).width(200).height(50).uniform();
-        table.row();
-
+        this.table.add(buttonSkip).width(100).height(35).pad(100,650,200,200);
     }
 
     /**

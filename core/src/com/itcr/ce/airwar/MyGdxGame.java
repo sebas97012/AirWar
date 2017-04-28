@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.itcr.ce.airwar.screens.MenuScreen;
+import com.itcr.ce.airwar.screens.NameScreen;
 import com.itcr.ce.airwar.server.Bridge;
 
 
@@ -36,7 +37,7 @@ public class MyGdxGame extends Game {
         batch = new SpriteBatch(); //Se crea el batch
         font = new BitmapFont();
         this.player = new Player(); //Se crea el jugador
-        this.setScreen(new MenuScreen(this)); //Se le asigna la pantalla a mostrar
+        this.setScreen(new NameScreen(this)); //Se le asigna la pantalla a mostrar
     }
 
     public void render() {

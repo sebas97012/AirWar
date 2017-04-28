@@ -16,26 +16,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.itcr.ce.airwar.Ground;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Player;
-import com.itcr.ce.airwar.levels.*;
+
 
 /**
- * Created by Arturo on 5/4/2017.
+ * Created by Adrian on 15/04/2017.
  */
+public class CreditsScreen implements Screen {
 
-public class DeathScreen implements Screen {
-    private MyGdxGame game;
-    private Player player;
+    final MyGdxGame game;
     private OrthographicCamera camera;
+    private Skin skin;
     private Stage stage;
     private Table table;
-    private TextButton buttonAgain;
     private TextButton buttonBack;
-    private Label score;
-    private Skin skin;
+    private Label creditsText;
     private Music backGroundMusic;
+    private Player player;
 
     /**
      * Constructor
@@ -43,7 +41,7 @@ public class DeathScreen implements Screen {
      * @param player Jugador
      */
 
-    public DeathScreen(MyGdxGame game, Player player){
+    public CreditsScreen(MyGdxGame game, Player player){
         this.game = game;
         this.player = player;
         this.camera = new OrthographicCamera();
@@ -63,58 +61,40 @@ public class DeathScreen implements Screen {
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
         this.stage = new Stage();
         this.table = new Table(this.skin);
-        this.buttonAgain = new TextButton("Try Again", this.skin);
-        this.buttonBack = new TextButton("Back Menu", this.skin);
-        this.stage.addActor(table);
-        this.table.setBounds(0, 0, this.stage.getWidth(), this.stage.getHeight());
-        Drawable drawable = new SpriteDrawable(new Sprite(new Texture("ground/gameOverBG.jpg")));
+        Drawable drawable = new SpriteDrawable(new Sprite(new Texture("ground/backgroundlevel10.png")));
         this.table.setBackground(drawable);
+        this.buttonBack = new TextButton("Back Menu", this.skin);
+        this.creditsText = new Label ("Created by:  \n" + "                 ADRIAN ALVAREZ SOLANO \n" +
+                "                 ARTURO CORDOBA VILLALOBOS \n" +
+                "                 MARIA DE LA PAZ HERNANDEZ SANCHEZ  \n" +
+                "                 NAYIB MENDEZ COTO  \n" +
+                "                 SEBASTIAN MORA RAMIREZ ", this.skin);
+        this.creditsText.setFontScale(2,2);
+
+        this.table.setFillParent(true);
+        this.table.setBounds(0, 0, this.stage.getWidth(), this.stage.getHeight());
+        this.stage.addActor(table);
         Gdx.input.setInputProcessor(this.stage);
 
-        this.score = new Label("Your score: " + player.getScore(), this.skin);
-        this.score.setFontScale(2,1);
-        this.score.setColor(255,0,0,1);
-        player.setScore(0);
 
-        this.buttonAgain.setWidth(150);
-        this.buttonAgain.setHeight(35);
-        this.buttonAgain.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                player.setLifes(5);
-                player.getShip().getPlaneLocation().x = 0;
-                player.getShip().getPlaneLocation().y = 0;
-                game.setScreen(new GameScreen(game, player));
-                dispose();
-            }
-        });
-
-        this.buttonBack.setWidth(150);
-        this.buttonBack.setHeight(35);
         this.buttonBack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.setScreen(new MenuScreen(game,player));
+                backGroundMusic.dispose();
                 dispose();
             }
         });
-
-        table.row();
-        this.table.add(this.score).colspan(5);
+        this.table.add(creditsText).pad(200,100,0,0);
         this.table.row();
-        this.table.add(" ");
-        this.table.row();
-        this.table.add(this.buttonBack).width(200).height(50).uniform();
-        this.table.add("        ");
-        this.table.add(this.buttonAgain).width(200).height(50).uniform();
-        table.row();
-
+        this.table.add(buttonBack).width(100).height(35).pad(100,650,200,200);
     }
 
     /**
      * Metodo encargado de renderizar todos los objetos
      * @param delta El tiempo entre el fotograma anterior y el actual
      */
+
     @Override
     public void render(float delta) {
         Gdx.gl.glViewport(0, 0, MyGdxGame.appWidth, MyGdxGame.appHeight);
@@ -150,6 +130,6 @@ public class DeathScreen implements Screen {
 
     @Override
     public void dispose() {
-        this.backGroundMusic.dispose();
+
     }
 }

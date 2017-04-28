@@ -27,6 +27,7 @@ public class GameScreen implements Screen {
     private boolean paused = false;
     private Music music;
     private ItemBar itemBar;
+
     /**
      * Constructor
      * @param game Es el objeto al que se le asignan las pantallas

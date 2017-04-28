@@ -2,6 +2,7 @@ package com.itcr.ce.airwar.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Player;
+
+import java.net.InetAddress;
 
 /**
  * Created by Adrian on 15/04/2017.
@@ -28,10 +31,15 @@ public class LevelCompleteScreen implements Screen {
     private TextButton buttonNext;
     private TextButton buttonAgain;
     private TextButton buttonBack;
+    private Music backGroundMusic;
     private Label score;
     private Skin skin;
 
-
+    /**
+     * Constructor
+     * @param game Es el objeto al que se le asignan las pantallas
+     * @param player Jugador
+     */
 
     public LevelCompleteScreen(MyGdxGame game, Player player){
         this.game = game;
@@ -39,14 +47,22 @@ public class LevelCompleteScreen implements Screen {
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false, MyGdxGame.appWidth, MyGdxGame.appHeight);
         camera.translate(0, 0);
+        this.backGroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/background.wav"));
+        this.backGroundMusic.setLooping(true);
+        this.backGroundMusic.play();
+
     }
+
+    /**
+     * Metodo encargado de crear todos los objetos que se van a renderizar
+     */
 
     @Override
     public void show() {
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
         this.stage = new Stage();
         this.table = new Table(this.skin);
-        Drawable drawable = new SpriteDrawable(new Sprite(new Texture(this.player.getLevel().getBackgroundTexturePath())));
+        Drawable drawable = new SpriteDrawable(new Sprite(new Texture("ground/levelCompletedBG.jpg")));
         this.table.setBackground(drawable);
         this.table.setFillParent(true);
         this.table.setBounds(0, 0, this.stage.getWidth(), this.stage.getHeight());
@@ -80,7 +96,7 @@ public class LevelCompleteScreen implements Screen {
                     player.getShip().getPlaneLocation().y = 0;
                     game.setScreen(new GameScreen(game, player));
                 }else{
-                    game.setScreen(new MenuScreen(game));
+                    game.setScreen(new CreditsScreen(game, player));
                 }
                 dispose();
             }
@@ -89,7 +105,7 @@ public class LevelCompleteScreen implements Screen {
         this.buttonBack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.setScreen(new MenuScreen(game));
+                game.setScreen(new MenuScreen(game,player));
                 dispose();
             }
         });
@@ -106,6 +122,11 @@ public class LevelCompleteScreen implements Screen {
         this.table.add(this.buttonNext).width(200).height(50).uniform();
         table.row();
     }
+
+    /**
+     * Metodo encargado de renderizar todos los objetos
+     * @param delta El tiempo entre el fotograma anterior y el actual
+     */
 
     @Override
     public void render(float delta) {
@@ -142,6 +163,7 @@ public class LevelCompleteScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        this.backGroundMusic.dispose();
     }
+
 }
