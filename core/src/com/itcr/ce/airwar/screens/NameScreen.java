@@ -54,7 +54,6 @@ public class NameScreen implements Screen {
 
                 for(int i = 0; i < playerDataList.getSize(); i++){
                     PlayerData current = (PlayerData) playerDataList.getElement(i).getDataT(); //Se obtiene el elemento
-                    System.out.println(current.getName() == playerData2.getName());
                     if(current.getName() == playerData2.getName()){ //Si el nombre corresponde con el nombre ingresado por el usuario se cargan esas estadisticas
                         player = new Player(current);
                     }
