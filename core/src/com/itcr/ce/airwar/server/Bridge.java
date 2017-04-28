@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 
 
 public class Bridge {
-    private int delay_time = 20;
+    private int delay_time = 25;
     public static TCPServer Server;
     private static Robot robot;
 
@@ -62,6 +62,6 @@ public class Bridge {
 
     }
     public static void UpdateServer(){
-        Server.sendMessage("Score:"+Integer.toString(MyGdxGame.player.getScore())+"\n"+"Lifes:"+Integer.toString(MyGdxGame.player.getLifes()));
+        Server.sendMessage("Score:"+Integer.toString(MyGdxGame.player.getScore())+"  Lifes:"+Integer.toString(MyGdxGame.player.getLifes()));
     }
 }
