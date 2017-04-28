@@ -10,7 +10,7 @@ import java.net.Socket;
 
 public class TCPServer extends Thread {
 
-    public static final int SERVERPORT = 8085;
+    private static final int SERVERPORT = 8085;
     // while this is true the server will run
     private boolean running = false;
     // used to send messages
@@ -25,7 +25,7 @@ public class TCPServer extends Thread {
      *
      * @param messageListener listens for the messages
      */
-    public TCPServer(OnMessageReceived messageListener) {
+    TCPServer(OnMessageReceived messageListener) {
         this.messageListener = messageListener;
     }
 
@@ -91,20 +91,21 @@ public class TCPServer extends Thread {
                 bufferSender = new PrintWriter(new BufferedWriter(new OutputStreamWriter(client.getOutputStream())), true);
 
                 //read the message received from client
-                BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                //BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                DataInputStream in = new DataInputStream(client.getInputStream());
 
                 //in this while we wait to receive messages from client (it's an infinite loop)
                 //this while it's like a listener for messages
                 while (running) {
 
-                    String message = null;
+                    int message = 0;
                     try {
-                        message = in.readLine();
+                        message = in.readInt();
                     } catch (IOException e) {
                         System.out.println("Error reading message: " + e.getMessage());
                     }
 
-                    if (message != null && messageListener != null) {
+                    if (message != 0 && messageListener != null) {
                         messageListener.messageReceived(message);
                     }
                 }
@@ -130,7 +131,7 @@ public class TCPServer extends Thread {
 
     //Declare the interface. The method messageReceived(String message) will must be implemented in the Bridge class
     public interface OnMessageReceived {
-        void messageReceived(String message);
+        void messageReceived(int message);
     }
 
 }

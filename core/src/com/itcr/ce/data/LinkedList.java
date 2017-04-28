@@ -159,6 +159,7 @@ public class LinkedList<T> {
 
     public void cleanList(){
         this.first = null;
+        this.size = 0;
     }
 
     /**

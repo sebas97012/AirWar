@@ -1,5 +1,7 @@
 package com.itcr.ce.airwar.levels;
 
+import com.badlogic.gdx.audio.Music;
+
 /**
  * Created by Arturo on 16/4/2017.
  */
@@ -7,6 +9,7 @@ public abstract class Level {
     protected Level nextLevel; //Nivel siguiente
     protected String backgroundTexturePath; //Fondo del nivel
     protected int numLevel; //Numero de nivel
+    protected Music music;
 
     //Atributos que almacenan la vida que va a tener cada enemigo según el nivel correspondiente
     protected int bossHealt;
@@ -55,5 +58,9 @@ public abstract class Level {
 
     public int getNumberOfEnemies() {
         return numberOfEnemies;
+    }
+
+    public Music getMusic() {
+        return music;
     }
 }

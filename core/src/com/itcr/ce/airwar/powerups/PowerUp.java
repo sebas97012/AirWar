@@ -5,13 +5,10 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Player;
-import com.itcr.ce.airwar.Random;
 
 /**
  * Created by Paz on 14/04/2017.
@@ -30,9 +27,8 @@ public abstract class PowerUp {
     protected float lastShoot;
     protected float elapsedTime;
     protected float speed;
-
-
-
+    protected Sound soundUsed;
+    protected Sound soundCollected;
 
     /**
      * Constructor
@@ -45,6 +41,8 @@ public abstract class PowerUp {
         this.sprite.setSize(scale * this.texture.getWidth(), scale * this.texture.getHeight());
         this.sprite.setOrigin(this.sprite.getWidth()/2, this.sprite.getHeight()/2);
         this.speed = 0f;
+        this.soundUsed = Gdx.audio.newSound(Gdx.files.internal("sounds/powerupsound.wav"));
+        this.soundCollected = Gdx.audio.newSound(Gdx.files.internal("sounds/powerupcollected.wav"));
     }
 
 
@@ -82,14 +80,9 @@ public abstract class PowerUp {
         sprite.draw(batch); //Se dibuja
     }
 
-
-
     public float getLastShoot(){
         return this.lastShoot;
     }
-
-
-
 
     public void setDispose(){
         this.dispose = true;
@@ -107,7 +100,13 @@ public abstract class PowerUp {
         return this.path;
     }
 
+    public Sound getSoundUsed() {
+        return soundUsed;
+    }
 
+    public Sound getSoundCollected() {
+        return soundCollected;
+    }
 
     /**
      * Metodo que verifica si un jugador capturó un power up
