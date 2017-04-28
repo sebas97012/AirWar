@@ -25,6 +25,7 @@ public class Player {
     private int maxScore;
     private int maxLevel;
     private int timePlayed;
+    private CharSequence time;
 
     /**
      * Constructor
@@ -183,5 +184,17 @@ public class Player {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getMaxScore() {
+        return maxScore;
+    }
+
+    public CharSequence getTime() {
+        return time;
     }
 }

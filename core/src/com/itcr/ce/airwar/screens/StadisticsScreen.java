@@ -19,11 +19,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.itcr.ce.airwar.MyGdxGame;
 import com.itcr.ce.airwar.Player;
 
-
 /**
- * Created by Adrian on 15/04/2017.
+ * Created by Adrian on 20/04/2017.
  */
-public class CreditsScreen implements Screen {
+public class StadisticsScreen implements Screen {
+
 
     final MyGdxGame game;
     private OrthographicCamera camera;
@@ -31,7 +31,11 @@ public class CreditsScreen implements Screen {
     private Stage stage;
     private Table table;
     private TextButton buttonBack;
-    private Label creditsText;
+    private Label stadisticsText;
+    private Label titleText;
+    private Label nameText;
+    private Label maxScoreText;
+    private Label timeText;
     private Music backGroundMusic;
     private Player player;
 
@@ -41,7 +45,7 @@ public class CreditsScreen implements Screen {
      * @param player Jugador
      */
 
-    public CreditsScreen(MyGdxGame game, Player player){
+    public StadisticsScreen(MyGdxGame game, Player player) {
         this.game = game;
         this.player = player;
         this.camera = new OrthographicCamera();
@@ -52,30 +56,27 @@ public class CreditsScreen implements Screen {
         this.backGroundMusic.play();
     }
 
-    /**
-     * Metodo encargado de crear todos los objetos que se van a renderizar
-     */
-
     @Override
     public void show() {
         this.skin = new Skin(Gdx.files.internal("uiskin.json"));
         this.stage = new Stage();
         this.table = new Table(this.skin);
-        Drawable drawable = new SpriteDrawable(new Sprite(new Texture("ground/backgroundlevel10.png")));
+        Drawable drawable = new SpriteDrawable(new Sprite(new Texture("ground/backgroundlevel8.png")));
         this.table.setBackground(drawable);
         this.buttonBack = new TextButton("Back Menu", this.skin);
-        this.creditsText = new Label ("Created by:  \n" + "                 ADRIAN ALVAREZ SOLANO \n" +
-                "                 ARTURO CORDOBA VILLALOBOS \n" +
-                "                 MARIA DE LA PAZ HERNANDEZ SANCHEZ  \n" +
-                "                 NAYIB MENDEZ COTO  \n" +
-                "                 SEBASTIAN MORA RAMIREZ ", this.skin);
-        this.creditsText.setFontScale(2,2);
+        this.stadisticsText = new Label ("Stadistics", this.skin);
+        this.titleText = new Label("Name                Max score               Time", this.skin);
+        this.nameText = new Label(this.player.getName(),this.skin );
+        this.maxScoreText = new Label("" + this.player.getMaxScore(),this.skin );
+        this.timeText = new Label("" + this.player.getTime(),this.skin );
+
+        this.stadisticsText.setFontScale(3,2);
+        this.stadisticsText.setColor(255,255,0,1);
 
         this.table.setFillParent(true);
         this.table.setBounds(0, 0, this.stage.getWidth(), this.stage.getHeight());
         this.stage.addActor(table);
         Gdx.input.setInputProcessor(this.stage);
-
 
         this.buttonBack.addListener(new ChangeListener() {
             @Override
@@ -84,15 +85,17 @@ public class CreditsScreen implements Screen {
                 dispose();
             }
         });
-        this.table.add(creditsText).pad(200,100,0,0);
-        this.table.row();
-        this.table.add(buttonBack).width(100).height(35).pad(100,650,200,200);
-    }
 
-    /**
-     * Metodo encargado de renderizar todos los objetos
-     * @param delta El tiempo entre el fotograma anterior y el actual
-     */
+        this.table.add(stadisticsText).pad(-400,0,0,0);
+        this.table.row();
+        this.table.add(titleText).pad(-300,0,0,0);
+        this.table.row();
+        this.table.add(nameText).pad(-200,-200,0,10);
+        this.table.add(maxScoreText).pad(-200,-250,0,10);
+        this.table.add(timeText).pad(-200,-100,0,0);
+        this.table.row();
+        this.table.add(buttonBack).width(100).height(35).pad(0,0,0,0);
+    }
 
     @Override
     public void render(float delta) {
@@ -129,6 +132,6 @@ public class CreditsScreen implements Screen {
 
     @Override
     public void dispose() {
-        this.backGroundMusic.dispose();
+
     }
 }

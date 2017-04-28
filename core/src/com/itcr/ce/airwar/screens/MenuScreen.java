@@ -33,6 +33,7 @@ public class MenuScreen implements Screen{
     private Table table;
     private TextButton buttonStart;
     private TextButton buttonCredits;
+    private TextButton buttonStatistics;
     private TextButton buttonExit;
     private Label ip;
     private String ipText;
@@ -54,8 +55,6 @@ public class MenuScreen implements Screen{
         this.backGroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music/background.wav"));
         this.backGroundMusic.setLooping(true);
         this.backGroundMusic.play();
-
-
     }
 
     /**
@@ -72,6 +71,7 @@ public class MenuScreen implements Screen{
         this.buttonStart = new TextButton("Start Game", this.skin);
         this.buttonExit = new TextButton("Exit", this.skin);
         this.buttonCredits = new TextButton("Credits", this.skin);
+        this.buttonStatistics = new TextButton("Statistics",this.skin);
         this.table.setFillParent(true);
         this.table.setBounds(0, 0, this.stage.getWidth(), this.stage.getHeight());
         this.stage.addActor(table);
@@ -81,7 +81,6 @@ public class MenuScreen implements Screen{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.setScreen(new IntroScreen(game, player));
-                backGroundMusic.dispose();
                 dispose();
             }
         });
@@ -90,7 +89,6 @@ public class MenuScreen implements Screen{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.setScreen(new CreditsScreen(game, player));
-                backGroundMusic.dispose();
                 dispose();
             }
         });
@@ -104,11 +102,20 @@ public class MenuScreen implements Screen{
             }
         });
 
-        this.table.add(this.ip).pad(0,0,0,435);
+        this.buttonStatistics.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.setScreen(new StadisticsScreen(game, player));
+                dispose();
+            }
+        });
+
+        this.table.add(this.ip).pad(0,-70,0,300);
         this.table.row();
-        this.table.add(this.buttonExit).width(200).height(50).pad(450,100,200,0);
-        this.table.add(this.buttonCredits).width(200).height(50).pad(450,0,200,80);
-        this.table.add(this.buttonStart).width(200).height(50).pad(450,80,200,150);
+        this.table.add(this.buttonExit).width(200).height(50).pad(450,250,200,10);
+        this.table.add(this.buttonCredits).width(200).height(50).pad(450,0,200,10);
+        this.table.add(this.buttonStatistics).width(200).height(50).pad(450,0,200,10);
+        this.table.add(this.buttonStart).width(200).height(50).pad(450,0,200,150);
 
 
     }
@@ -117,6 +124,7 @@ public class MenuScreen implements Screen{
      * Metodo encargado de renderizar todos los objetos
      * @param delta El tiempo entre el fotograma anterior y el actual
      */
+
     @Override
     public void render(float delta) {
         Gdx.gl.glViewport(0, 0, MyGdxGame.appWidth, MyGdxGame.appHeight);
@@ -152,7 +160,7 @@ public class MenuScreen implements Screen{
 
     @Override
     public void dispose() {
-
+        this.backGroundMusic.dispose();
     }
 
     private void ipConfig (){
